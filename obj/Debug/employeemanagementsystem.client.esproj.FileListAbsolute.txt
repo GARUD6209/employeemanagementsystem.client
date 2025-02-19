@@ -1,0 +1,1 @@
+D:\.net_dev\EmployeeAdminPortal\EmployeeManagementSystem\employeemanagementsystem.client\obj\Debug\employeemanagementsystem.client.esproj.CoreCompileInputs.cache
