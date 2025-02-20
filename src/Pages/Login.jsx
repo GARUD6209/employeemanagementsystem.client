@@ -69,8 +69,8 @@ function Login({ setAuthorized }) {
           p: 4,
           boxShadow: 3,
           borderRadius: 2,
-          bgcolor: "#1E1E1E", // Dark mode friendly
-          color: "#fff", // White text for contrast
+          bgcolor: "var(--bg-color) !important", // Dark mode friendly
+          color: "var(--text-color)", // White text for contrast
         }}
       >
         <Typography variant="h5" align="center" gutterBottom>
@@ -87,9 +87,9 @@ function Login({ setAuthorized }) {
             value={email}
             onChange={handleChange}
             sx={{
-              input: { color: "#fff" },
-              label: { color: "#ccc" },
-              bgcolor: "#333",
+              input: { color: "var(--text-color)" },
+              label: { color: "var(--text-color)" },
+              bgcolor: "var(--bg-color) !important",
             }} // Dark input styling
           />
           <TextField
@@ -102,9 +102,9 @@ function Login({ setAuthorized }) {
             value={password}
             onChange={handleChange}
             sx={{
-              input: { color: "#fff" },
-              label: { color: "#ccc" },
-              bgcolor: "#333",
+              input: { color: "var(--text-color)" },
+              label: { color: "var(--text-color)" },
+              bgcolor: "var(--bg-color) !important",
             }} // Dark input styling
           />
           <FormControlLabel
@@ -113,15 +113,19 @@ function Login({ setAuthorized }) {
                 name="rememberme"
                 checked={rememberme}
                 onChange={handleChange}
-                sx={{ color: "#fff" }}
+                sx={{ color: "var(--text-color)" }}
               />
             }
-            label={<Typography sx={{ color: "#fff" }}>Remember Me</Typography>}
+            label={
+              <Typography sx={{ color: "var(--text-color)" }}>
+                Remember Me
+              </Typography>
+            }
           />
           {error && (
             <Alert
               severity="error"
-              sx={{ mt: 2, bgcolor: "#D32F2F", color: "#fff" }}
+              sx={{ mt: 2, bgcolor: "#D32F2F", color: "var(--text-color)" }}
             >
               {error}
             </Alert>

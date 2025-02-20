@@ -33,7 +33,7 @@ function App() {
           const data = await response.json();
 
           setAuthorized(true);
-          setUserRole(data.roles[0]);
+          setUserRole(data.roles[0].toLowerCase());
           localStorage.setItem("userRole", data.roles[0]);
         } else {
           setAuthorized(false);
@@ -65,7 +65,13 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={authorized ? <Navigate to="/home" /> : <RoleSelection />}
+          element={
+            authorized ? (
+              <Navigate to="/home" />
+            ) : (
+              <RoleSelection setUserRole={setUserRole} />
+            )
+          }
         />
         <Route
           path="/login"

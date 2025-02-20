@@ -4,7 +4,7 @@ import EmployeeSidebar from "./AuthorizedComponents/EmployeeSidebar";
 
 const SidebarWrapper = ({ useRole, setAuthorized, setUserRole }) => {
   console.log(useRole);
-  return useRole === "Admin" ? (
+  return useRole === "admin" ? (
     <>
       <AdminSidebar setAuthorized={setAuthorized} setUserRole={setUserRole} />
     </>

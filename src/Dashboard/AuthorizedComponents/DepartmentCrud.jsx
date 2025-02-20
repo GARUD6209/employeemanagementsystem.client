@@ -126,8 +126,8 @@ const DepartmentCrud = () => {
         margin: "auto",
         mt: 4,
         p: 2,
-        bgcolor: "#1e1e1e",
-        color: "white",
+        bgcolor: "var(--card-bg-color)",
+        color: "var(--text-color)",
       }}
     >
       <CardContent>
@@ -145,7 +145,7 @@ const DepartmentCrud = () => {
           onChange={(e) =>
             setNewDepartment({ ...newDepartment, name: e.target.value })
           }
-          sx={{ mb: 2, bgcolor: "white", borderRadius: 1 }}
+          sx={{ mb: 2, bgcolor: "var(--input-bg-color)", borderRadius: 1 }}
         />
         <Button
           variant="contained"
@@ -164,7 +164,16 @@ const DepartmentCrud = () => {
           {departments.map((department) => (
             <ListItem
               key={department.id}
-              sx={{ bgcolor: "#333", borderRadius: 1, mb: 1, p: 1 }}
+              sx={{
+                bgcolor: "var(--bg-color) !important",
+                borderRadius: 1,
+                mb: 1,
+                p: 1,
+                display: "flex",
+                alignItems: "center",
+                color: "var(--text-color)",
+                border: "1px solid var(--text-color)", // Add this line to add a border
+              }}
             >
               {editDepartment.id === department.id ? (
                 <TextField
@@ -177,13 +186,26 @@ const DepartmentCrud = () => {
                       name: e.target.value,
                     })
                   }
-                  sx={{ bgcolor: "white", borderRadius: 1 }}
+                  sx={{
+                    bgcolor: "var(--input-bg-color) !important",
+                    borderRadius: 1,
+                    color: "var(--text-color)",
+                  }}
                 />
               ) : (
-                <ListItemText primary={department.name} />
+                <ListItemText
+                  primary={department.name}
+                  sx={{ color: "var(--text-color)" }}
+                />
               )}
 
-              <ListItemSecondaryAction>
+              <ListItemSecondaryAction
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "var(--text-color)",
+                }}
+              >
                 {editDepartment.id === department.id ? (
                   <>
                     <IconButton color="primary" onClick={updateDepartment}>

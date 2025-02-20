@@ -63,8 +63,8 @@ function Register() {
           mt: 8,
           p: 4,
           borderRadius: 2,
-          bgcolor: "#1e1e1e", // Dark theme background
-          color: "#ffffff", // Light text color
+          bgcolor: "var(--bg-color) !important", // Dark theme background
+          color: "var(--text-color)", // Light text color
         }}
       >
         <Typography variant="h5" align="center" gutterBottom>
@@ -80,9 +80,12 @@ function Register() {
             name="email"
             value={email}
             onChange={handleChange}
-            InputLabelProps={{ style: { color: "#ffffff" } }}
+            InputLabelProps={{ style: { color: "var(--text-color)" } }}
             InputProps={{
-              style: { color: "#ffffff", backgroundColor: "#333333" },
+              style: {
+                color: "var(--text-color)",
+                bgcolor: "var(--bg-color) !important",
+              },
             }}
           />
           <TextField
@@ -94,9 +97,12 @@ function Register() {
             name="password"
             value={password}
             onChange={handleChange}
-            InputLabelProps={{ style: { color: "#ffffff" } }}
+            InputLabelProps={{ style: { color: "var(--text-color)" } }}
             InputProps={{
-              style: { color: "#ffffff", backgroundColor: "#333333" },
+              style: {
+                color: "var(--text-color)",
+                bgcolor: "var(--bg-color) !important",
+              },
             }}
           />
           <TextField
@@ -108,15 +114,18 @@ function Register() {
             name="confirmPassword"
             value={confirmPassword}
             onChange={handleChange}
-            InputLabelProps={{ style: { color: "#ffffff" } }}
+            InputLabelProps={{ style: { color: "var(--text-color)" } }}
             InputProps={{
-              style: { color: "#ffffff", backgroundColor: "#333333" },
+              style: {
+                color: "var(--text-color)",
+                bgcolor: "var(--bg-color) !important",
+              },
             }}
           />
           {error && (
             <Alert
               severity="error"
-              sx={{ mt: 2, bgcolor: "#333333", color: "#ffffff" }}
+              sx={{ mt: 2, bgcolor: "#333333", color: "var(--text-color)" }}
             >
               {error}
             </Alert>

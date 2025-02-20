@@ -1,3 +1,30 @@
+:root {
+  --background-color: #1e1e1e;
+  --color: white;
+  --card-bg-color: #1e1e1e;
+  --text-color: white;
+  --input-bg-color: white;
+  --list-item-bg-color: #333;
+}
+
+[data-theme="light"] {
+  --background-color: #f0f0f0;
+  --color: #333333;
+  --card-bg-color: #ffffff;
+  --text-color: #333333;
+  --input-bg-color: #e0e0e0;
+  --list-item-bg-color: #ffffff;
+}
+
+[data-theme="dark"] {
+  --background-color: #1e1e1e;
+  --color: white;
+  --card-bg-color: #1e1e1e;
+  --text-color: white;
+  --input-bg-color: #333;
+  --list-item-bg-color: #333;
+}
+
 .sidebar {
   width: 250px;
   height: 100vh;

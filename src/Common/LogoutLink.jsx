@@ -16,7 +16,6 @@ function LogoutLink({ setAuthorized, setUserRole }) {
       if (response.ok) {
         setAuthorized(false);
         setUserRole("");
-        //ccfsvd
         navigate("/");
       } else {
         console.error("Error logging out");
@@ -27,7 +26,11 @@ function LogoutLink({ setAuthorized, setUserRole }) {
   };
 
   return (
-    <a href="#" onClick={handleLogoutSubmit}>
+    <a
+      href="#"
+      onClick={handleLogoutSubmit}
+      style={{ textDecoration: "none", color: "var(--text-color)" }}
+    >
       Logout
     </a>
   );
