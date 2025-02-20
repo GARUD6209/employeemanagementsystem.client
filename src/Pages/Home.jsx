@@ -1,5 +1,6 @@
-import AuthorizeView from "../Common/AuthorizeView";
-import WeatherForecast from "../Common/WeatherForecast.jsx";
+import React from "react";
+import AuthorizeView from "../components/common/AuthorizeView";
+import WeatherForecast from "../components/common/WeatherForecast";
 
 function Home() {
   return (

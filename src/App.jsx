@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./Pages/Home.jsx";
+import ThemeToggle from "./components/common/ThemeToggle.jsx";
+import Navigation from "./components/common/Navigation.jsx";
 import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
 import RoleSelection from "./Pages/RoleSelection.jsx";
-import Navigation from "./Common/Navigation.jsx";
-import Dashboard from "./Dashboard/Dashboard.jsx";
-import DepartmentCrud from "./Dashboard/AuthorizedComponents/DepartmentCrud.jsx";
-import EmployeePage from "./components/EmployeePage.jsx";
-import ThemeToggle from "./Dashboard/AuthorizedComponents/ThemeToggle.jsx";
-import WeatherForecast from "./Common/WeatherForecast.jsx";
+import Dashboard from "./components/dashboard/Dashboard.jsx";
+import WeatherForecast from "./components/common/WeatherForecast.jsx";
+import DepartmentCrud from "./components/department/DepartmentCrud.jsx";
+import EmployeePage from "./components/employee/EmployeePage.jsx";
 
 function App() {
   const [authorized, setAuthorized] = useState(false);

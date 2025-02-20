@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// import Sidebar from "../components/dashboard/Dashboard/SideBar";
-import SidebarWrapper from "../components/dashboard/Dashboard/SideBarWrapper";
+import SidebarWrapper from "../sidebar/SidebarWrapper";
 
 function Navigation({ authorized, setAuthorized, userRole, setUserRole }) {
   console.log(userRole);
   return (
     <>
       {authorized ? (
-        // <Sidebar setAuthorized={setAuthorized} />
         <SidebarWrapper
           useRole={userRole}
           setAuthorized={setAuthorized}

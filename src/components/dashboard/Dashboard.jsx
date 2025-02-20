@@ -1,10 +1,8 @@
 import React from "react";
 import { Grid, Paper, Typography, Box } from "@mui/material";
-
-import adminIcon from "../assets/admin-icon.png";
-import employeeIcon from "../assets/employee-icon.png";
-import salaryIcon from "../assets/salary-icon.png";
-
+import adminIcon from "../../assets/admin-icon.png";
+import employeeIcon from "../../assets/employee-icon.png";
+import salaryIcon from "../../assets/salary-icon.png";
 const Dashboard = () => {
   return (
     <Box sx={{ flexGrow: 1, p: 3, display: "flex", justifyContent: "center" }}>

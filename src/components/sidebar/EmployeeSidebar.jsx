@@ -18,7 +18,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import LogoutLink from "../../Common/LogoutLink";
+import LogoutLink from "../common/LogoutLink";
 
 const EmployeeSidebar = ({ setAuthorized, setUserRole }) => {
   return (

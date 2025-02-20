@@ -1,6 +1,6 @@
 import React from "react";
-import AdminSidebar from "./AuthorizedComponents/AdminSidebar";
-import EmployeeSidebar from "./AuthorizedComponents/EmployeeSidebar";
+import AdminSidebar from "./AdminSidebar";
+import EmployeeSidebar from "./EmployeeSidebar";
 
 const SidebarWrapper = ({ useRole, setAuthorized, setUserRole }) => {
   console.log(useRole);
