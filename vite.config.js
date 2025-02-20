@@ -70,7 +70,11 @@ export default defineConfig({
             '^/api/Department': {
                 target: 'https://localhost:7216/',
                 secure: false
-            }
+            },
+            '^/api/Employee': {
+                target: 'https://localhost:7216/',
+                secure: false
+            },
         },
         port: 64919,
         https: {

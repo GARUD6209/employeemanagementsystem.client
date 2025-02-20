@@ -23,13 +23,32 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
     salary: 0,
     jobRole: "",
     departmentId: "",
-    trainingRequired: false,
+    trainingRequired: "no",
     userId: "",
   });
 
   useEffect(() => {
-    if (employee) {
-      setFormData(employee);
+    if (employee && employee.employeeId) {
+      setFormData({
+        ...employee,
+        trainingRequired: employee.trainingRequired ? "yes" : "no",
+      });
+    } else {
+      setFormData({
+        employeeId: "",
+        firstName: "",
+        lastName: "",
+        photo: "",
+        email: "",
+        address: "",
+        contact: "",
+        emergencyContact: "",
+        salary: 0,
+        jobRole: "",
+        departmentId: "",
+        trainingRequired: "no",
+        userId: "",
+      });
     }
   }, [employee]);
 
@@ -43,11 +62,16 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
 
   return (
     <div className="form-container">
-      <h2>{employee ? "Edit Employee" : "Add Employee"}</h2>
+      <h2>
+        {employee && employee.employeeId ? "Edit Employee" : "Add Employee"}
+      </h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSave(formData);
+          onSave({
+            ...formData,
+            trainingRequired: formData.trainingRequired === "yes",
+          });
         }}
       >
         <Grid container spacing={2}>
@@ -60,6 +84,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -71,6 +101,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -82,6 +118,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -93,6 +135,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -104,6 +152,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -115,6 +169,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -126,6 +186,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -138,6 +204,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -149,6 +221,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -160,16 +238,25 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl variant="outlined" fullWidth required>
-              <InputLabel>Training Required</InputLabel>
+              <InputLabel style={{ color: "var(--color)" }}>
+                Training Required
+              </InputLabel>
               <Select
                 name="trainingRequired"
                 value={formData.trainingRequired ? "yes" : "no"}
                 onChange={handleChange}
                 label="Training Required"
+                style={{ color: "var(--color)" }} // Ensure select text color changes with theme
               >
                 <MenuItem value="yes">Yes</MenuItem>
                 <MenuItem value="no">No</MenuItem>
@@ -185,6 +272,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                style: { color: "var(--color)" }, // Ensure label text color changes with theme
+              }}
+              InputProps={{
+                style: { color: "var(--color)" }, // Ensure input text color changes with theme
+              }}
             />
           </Grid>
         </Grid>

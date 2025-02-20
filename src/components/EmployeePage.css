@@ -81,12 +81,22 @@ input {
 .search-bar {
   width: 70%;
   background: var(--background-color);
-  color: var(--color);
+  color: var(--color); /* Use CSS variable for text color */
+}
+
+.search-bar input {
+  color: var(--color); /* Ensure input text color changes with theme */
 }
 
 .employee-table {
   width: 100%;
   margin-top: 20px;
+  color: var(--color); /* Use CSS variable for text color */
+}
+
+.employee-table th,
+.employee-table td  {
+  color: var(--color); /* Use CSS variable for text color */
 }
 
 .profile-img {
