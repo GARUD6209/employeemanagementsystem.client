@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-// import Sidebar from "../Dashboard/SideBar";
-import SidebarWrapper from "../Dashboard/SideBarWrapper";
+// import Sidebar from "../components/dashboard/Dashboard/SideBar";
+import SidebarWrapper from "../components/dashboard/Dashboard/SideBarWrapper";
 
 function Navigation({ authorized, setAuthorized, userRole, setUserRole }) {
   console.log(userRole);
