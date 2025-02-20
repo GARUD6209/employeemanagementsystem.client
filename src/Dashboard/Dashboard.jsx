@@ -1,6 +1,5 @@
 import React from "react";
 import { Grid, Paper, Typography, Box } from "@mui/material";
-import "./Dashboard.css";
 
 import adminIcon from "../assets/admin-icon.png";
 import employeeIcon from "../assets/employee-icon.png";

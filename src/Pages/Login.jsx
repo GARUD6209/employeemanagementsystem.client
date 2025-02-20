@@ -48,6 +48,7 @@ function Login({ setAuthorized }) {
         .then((data) => {
           if (data.ok) {
             setAuthorized(true);
+
             navigate("/home");
           } else {
             setError("Error Logging In.");

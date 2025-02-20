@@ -1,0 +1,96 @@
+.form-container {
+  width: 50%;
+  margin: auto;
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--color);
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: var(--background-color);
+  color: var(--color);
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.save-btn, .cancel-btn, .add-btn, .edit-btn, .delete-btn {
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #4caf50;
+  color: white;
+}
+
+.cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.add-btn {
+  background: #2196f3;
+  color: white;
+}
+
+.edit-btn {
+  background: #ff9800;
+  color: white;
+}
+
+.delete-btn {
+  background: #d32f2f;
+  color: white;
+}
+
+.employee-page-container {
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--color);
+}
+
+.employee-list-container {
+  background: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--color);
+}
+
+.search-add-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  width: 70%;
+  background: var(--background-color);
+  color: var(--color);
+}
+
+.employee-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
