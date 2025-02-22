@@ -1,10 +1,13 @@
 .form-container {
-  width: 50%;
-  margin: auto;
-  background: var(--background-color);
+  width: 90%;
+  max-width: 1000px;  /* Reduced from 1200px */
+  margin: 20px auto;
   padding: 20px;
+  overflow-x: auto;
   border-radius: 8px;
   color: var(--color);
+  background: var(--background-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
@@ -59,15 +62,25 @@ input {
 }
 
 .employee-page-container {
+  width: calc(100vw - 240px) !important;
+  margin-left: 240px !important;
+  padding: 24px !important;
+  overflow-x: hidden;
   background: var(--background-color);
-  padding: 20px;
-  border-radius: 8px;
-  color: var(--color);
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  top: 64px;
+  bottom: 0;
+  right: 0;
 }
 
 .employee-list-container {
-  background: var(--background-color);
-  padding: 20px;
+  width: 90%;
+  max-width: 1000px;  /* Reduced from 1200px */
+  margin: 20px auto;
+  background: transparent;
+  padding: 0;
   border-radius: 8px;
   color: var(--color);
 }
@@ -76,22 +89,38 @@ input {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  background: var(--background-color);
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar {
   width: 70%;
   background: var(--background-color);
-  color: var(--color); /* Use CSS variable for text color */
+  color: var(--color) ; /* Use CSS variable for text color */
 }
 
 .search-bar input {
-  color: var(--color); /* Ensure input text color changes with theme */
+  color: var(--color) ; /* Ensure input text color changes with theme */
 }
 
 .employee-table {
   width: 100%;
+  min-width: 1000px;  /* Reduced from 1200px */
   margin-top: 20px;
   color: var(--color); /* Use CSS variable for text color */
+  background: var(--background-color);
+}
+
+.employee-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 24px;
+  background: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
 }
 
 .employee-table th,
@@ -103,4 +132,82 @@ input {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+/* Select Component Styles */
+.MuiSelect-root {
+  color: var(--color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.MuiSelect-icon {
+  color: var(--color) !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: var(--color) !important;
+}
+
+/* Dropdown Menu Styles */
+.MuiMenu-paper {
+  background-color: var(--background-color) !important;
+}
+
+.MuiMenuItem-root {
+  color: var(--color) !important;
+}
+
+.MuiMenuItem-root:hover {
+  background-color: var(--hover-color) !important;
+}
+
+/* Select Label Styles */
+.MuiInputLabel-root {
+  color: var(--color) !important;
+}
+
+/* Form Control Styles */
+.MuiFormControl-root {
+  background-color: var(--background-color) !important;
+}
+
+/* TextField Styles */
+.MuiOutlinedInput-root {
+  color: var(--color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.MuiOutlinedInput-input {
+  color: var(--color) !important;
+}
+
+/* Select Text Alignment */
+.MuiSelect-select {
+  text-align: left !important;
+  padding-left: 14px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .form-container,
+  .employee-list-container {
+    margin: 10px auto;
+    padding: 16px;
+  }
+
+  .employee-page-container {
+    width: calc(100vw - 64px) !important;
+    margin-left: 64px !important;
+    padding: 16px !important;
+  }
+
+  .search-add-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-bar {
+    width: 100%;
+    max-width: none;
+  }
 }

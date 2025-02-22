@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --background-color: #1e1e1e;
   --color: white;
   --card-bg-color: #1e1e1e;
@@ -23,7 +23,7 @@
   --text-color: white;
   --input-bg-color: #333;
   --list-item-bg-color: #333;
-}
+} */
 
 .sidebar {
   width: 250px;
@@ -35,6 +35,7 @@
   top: 0;
   left: 0;
   overflow-y: auto;
+  z-index: 1000;
 }
 
 .MuiListItem-root {

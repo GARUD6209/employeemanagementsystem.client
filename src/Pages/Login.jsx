@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Alert,
 } from "@mui/material";
+import AuthPageWrapper from "../components/common/AuthPageWrapper";
 
 function Login({ setAuthorized }) {
   const [email, setEmail] = useState("");
@@ -62,85 +63,85 @@ function Login({ setAuthorized }) {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          mt: 8,
-          p: 4,
-          boxShadow: 3,
-          borderRadius: 2,
-          bgcolor: "var(--bg-color) !important", // Dark mode friendly
-          color: "var(--text-color)", // White text for contrast
-        }}
-      >
-        <Typography variant="h5" align="center" gutterBottom>
-          Login as {role}
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Email"
-            variant="outlined"
-            type="email"
-            name="email"
-            value={email}
-            onChange={handleChange}
-            sx={{
-              input: { color: "var(--text-color)" },
-              label: { color: "var(--text-color)" },
-              bgcolor: "var(--bg-color) !important",
-            }} // Dark input styling
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Password"
-            variant="outlined"
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-            sx={{
-              input: { color: "var(--text-color)" },
-              label: { color: "var(--text-color)" },
-              bgcolor: "var(--bg-color) !important",
-            }} // Dark input styling
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="rememberme"
-                checked={rememberme}
-                onChange={handleChange}
-                sx={{ color: "var(--text-color)" }}
-              />
-            }
-            label={
-              <Typography sx={{ color: "var(--text-color)" }}>
-                Remember Me
-              </Typography>
-            }
-          />
-          {error && (
-            <Alert
-              severity="error"
-              sx={{ mt: 2, bgcolor: "#D32F2F", color: "var(--text-color)" }}
+    <AuthPageWrapper>
+      <Container maxWidth="xs">
+        <Box
+          sx={{
+            mt: 8,
+            p: 4,
+            boxShadow: 3,
+            borderRadius: 2,
+            bgcolor: "var(--bg-color) !important", // Dark mode friendly
+            color: "black", // White text for contrast
+          }}
+        >
+          <Typography variant="h5" align="center" gutterBottom>
+            Login as {role}
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Email"
+              variant="outlined"
+              type="email"
+              name="email"
+              value={email}
+              onChange={handleChange}
+              sx={{
+                input: { color: "black" },
+                label: { color: "black" },
+                bgcolor: "var(--bg-color) !important",
+              }} // Dark input styling
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Password"
+              variant="outlined"
+              type="password"
+              name="password"
+              value={password}
+              onChange={handleChange}
+              sx={{
+                input: { color: "black" },
+                label: { color: "black" },
+                bgcolor: "var(--bg-color) !important",
+              }} // Dark input styling
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="rememberme"
+                  checked={rememberme}
+                  onChange={handleChange}
+                  sx={{ color: "black" }}
+                />
+              }
+              label={
+                <Typography sx={{ color: "black" }}>Remember Me</Typography>
+              }
+            />
+            {error && (
+              <Alert
+                severity="error"
+                sx={{ mt: 2, bgcolor: "#D32F2F", color: "black" }}
+              >
+                {error}
+              </Alert>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ mt: 2, bgcolor: "#1976D2" }}
             >
-              {error}
-            </Alert>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ mt: 2, bgcolor: "#1976D2" }}
-          >
-            Login
-          </Button>
-        </form>
-      </Box>
-    </Container>
+              Login
+            </Button>
+          </form>
+        </Box>
+      </Container>
+    </AuthPageWrapper>
   );
 }
 

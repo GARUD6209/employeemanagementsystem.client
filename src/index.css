@@ -13,6 +13,14 @@
   --secondary-color: #d3d3de;
   --hover-color: #747bff;
 
+  --dialog-bg-color: #ffffff;
+  --card-bg-color: #f5f5f5;
+  --input-bg-color: #ffffff;
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --text-secondary-color: #757575;
+  --divider-color: #e0e0e0;
+
   font-family: var(--font-family);
   line-height: var(--line-height);
   font-weight: var(--font-weight);
@@ -74,6 +82,14 @@ button:focus-visible {
 [data-theme="dark"] {
   --background-color: var(--background-color-dark);
   --color: var(--color-dark);
+
+  --dialog-bg-color: #424242;
+  --card-bg-color: #303030;
+  --input-bg-color: #424242;
+  --bg-color: #303030;
+  --text-color: #ffffff;
+  --text-secondary-color: #bdbdbd;
+  --divider-color: #616161;
 }
 
 body[data-theme="light"] {

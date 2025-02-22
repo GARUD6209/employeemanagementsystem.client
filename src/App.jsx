@@ -11,6 +11,7 @@ import Dashboard from "./components/dashboard/Dashboard.jsx";
 import WeatherForecast from "./components/common/WeatherForecast.jsx";
 import DepartmentCrud from "./components/department/DepartmentCrud.jsx";
 import EmployeePage from "./components/employee/EmployeePage.jsx";
+import AnnouncementCrud from "./components/announcement/AnnouncementCrud.jsx";
 
 function App() {
   const [authorized, setAuthorized] = useState(false);
@@ -35,6 +36,7 @@ function App() {
           setAuthorized(true);
           setUserRole(data.roles[0].toLowerCase());
           localStorage.setItem("userRole", data.roles[0]);
+          localStorage.setItem("userId", data.userId);
         } else {
           setAuthorized(false);
         }
@@ -87,6 +89,8 @@ function App() {
         <Route path="/weatherApi" element={<WeatherForecast />} />
         <Route path="/add-department" element={<DepartmentCrud />} />
         <Route path="/employees" element={<EmployeePage />} />
+        <Route path="/announcements" element={<AnnouncementCrud />} />
+
         <Route path="*" element={<Navigate to="/" replace={true} />} />
       </Routes>
     </BrowserRouter>

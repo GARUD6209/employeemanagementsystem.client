@@ -8,57 +8,100 @@ import {
   FormControl,
   Grid,
 } from "@mui/material";
+import { DepartmentService } from "../../services/DepartmentService";
+import Employee from "../../models/employee.model";
 import "./EmployeePage.css";
 
 const EmployeeForm = ({ employee, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
-    employeeId: "",
-    firstName: "",
-    lastName: "",
-    photo: "",
-    email: "",
-    address: "",
-    contact: "",
-    emergencyContact: "",
-    salary: 0,
-    jobRole: "",
-    departmentId: "",
-    trainingRequired: "no",
-    userId: "",
-  });
+  const [formData, setFormData] = useState(new Employee());
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const departmentService = new DepartmentService();
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
   useEffect(() => {
     if (employee && employee.employeeId) {
-      setFormData({
-        ...employee,
-        trainingRequired: employee.trainingRequired ? "yes" : "no",
-      });
+      const formattedEmployee = Employee.fromJson(employee);
+      setFormData(formattedEmployee);
     } else {
-      setFormData({
-        employeeId: "",
-        firstName: "",
-        lastName: "",
-        photo: "",
-        email: "",
-        address: "",
-        contact: "",
-        emergencyContact: "",
-        salary: 0,
-        jobRole: "",
-        departmentId: "",
-        trainingRequired: "no",
-        userId: "",
-      });
+      setFormData(new Employee());
     }
   }, [employee]);
 
+  const fetchDepartments = async () => {
+    try {
+      const data = await departmentService.getAllDepartments();
+      setDepartments(data);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: name === "trainingRequired" ? value === "yes" : value,
-    }));
+    setFormData((prevData) => {
+      const newData = { ...prevData };
+      if (name === "departmentId") {
+        newData[name] = value === "" ? "" : Number(value);
+      } else if (name === "salary") {
+        newData[name] = Number(value);
+      } else if (name === "trainingRequired") {
+        newData[name] = value === "true";
+      } else {
+        newData[name] = value;
+      }
+      return newData;
+    });
   };
+
+  const textFieldProps = {
+    InputLabelProps: {
+      style: { color: "var(--color)" },
+    },
+    InputProps: {
+      style: { color: "var(--color)" },
+    },
+    sx: {
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: "var(--color)",
+      },
+    },
+  };
+
+  const departmentSelect = (
+    <Grid item xs={12} sm={6}>
+      <FormControl variant="outlined" fullWidth required>
+        <InputLabel style={{ color: "var(--color)" }}>Department</InputLabel>
+        <Select
+          name="departmentId"
+          value={formData.departmentId || ""}
+          onChange={handleChange}
+          label="Department"
+          sx={{
+            textAlign: "left",
+            "& .MuiSelect-select": {
+              textAlign: "left",
+              paddingLeft: "14px",
+            },
+          }}
+        >
+          <MenuItem value="">
+            <em>Select a department</em>
+          </MenuItem>
+          {departments.map((dept) => (
+            <MenuItem key={dept.departmentId} value={dept.departmentId}>
+              {dept.departmentName}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+  );
 
   return (
     <div className="form-container">
@@ -68,10 +111,8 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSave({
-            ...formData,
-            trainingRequired: formData.trainingRequired === "yes",
-          });
+          // Remove the transformation since it's already boolean
+          onSave(formData);
         }}
       >
         <Grid container spacing={2}>
@@ -84,12 +125,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -101,12 +137,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -118,12 +149,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -135,12 +161,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -152,12 +173,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -169,12 +185,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -186,12 +197,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -204,12 +210,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -221,31 +222,10 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Department ID"
-              name="departmentId"
-              value={formData.departmentId}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
-            />
-          </Grid>
+          {departmentSelect}
           <Grid item xs={12} sm={6}>
             <FormControl variant="outlined" fullWidth required>
               <InputLabel style={{ color: "var(--color)" }}>
@@ -253,13 +233,12 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               </InputLabel>
               <Select
                 name="trainingRequired"
-                value={formData.trainingRequired ? "yes" : "no"}
+                value={formData.trainingRequired.toString()} // Convert to string
                 onChange={handleChange}
                 label="Training Required"
-                style={{ color: "var(--color)" }} // Ensure select text color changes with theme
               >
-                <MenuItem value="yes">Yes</MenuItem>
-                <MenuItem value="no">No</MenuItem>
+                <MenuItem value="true">Yes</MenuItem>
+                <MenuItem value="false">No</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -272,12 +251,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                style: { color: "var(--color)" }, // Ensure label text color changes with theme
-              }}
-              InputProps={{
-                style: { color: "var(--color)" }, // Ensure input text color changes with theme
-              }}
+              {...textFieldProps}
             />
           </Grid>
         </Grid>

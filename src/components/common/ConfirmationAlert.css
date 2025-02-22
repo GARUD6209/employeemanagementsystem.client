@@ -1,0 +1,5 @@
+.confirm-button-disabled {
+  color: rgba(255, 255, 255, 0.7) !important; /* Light grey color */
+  background-color: rgba(255, 0, 0, 0.3) !important; /* Slightly transparent red */
+  border-color: rgba(255, 0, 0, 0.5) !important; /* Slightly transparent red border */
+}

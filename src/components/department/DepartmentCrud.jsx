@@ -10,113 +10,108 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete, Check } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
+import ConfirmationAlert from "../common/ConfirmationAlert";
+import { DepartmentService } from "../../services/DepartmentService";
+import Department from "../../models/department.model";
 
 const DepartmentCrud = () => {
   const [departments, setDepartments] = useState([]);
   const [newDepartment, setNewDepartment] = useState({ name: "" });
   const [editDepartment, setEditDepartment] = useState({ id: null, name: "" });
+  const [deleteConfirmation, setDeleteConfirmation] = useState({
+    open: false,
+    id: null,
+  });
+  const [editConfirmation, setEditConfirmation] = useState({
+    open: false,
+    id: null,
+    name: "",
+  });
+  const [error, setError] = useState("");
+
+  const departmentService = new DepartmentService();
 
   useEffect(() => {
     fetchDepartments();
   }, []);
 
-  // ✅ Fetch Departments & Fix ID Mapping
   const fetchDepartments = async () => {
     try {
-      const response = await fetch("/api/Department");
-
-      if (!response.ok) {
-        console.error("Failed to fetch departments");
-        return;
-      }
-
-      const data = await response.json();
-      console.log("Fetched departments:", data);
-
-      // ✅ Ensure correct ID and Name Mapping
+      const data = await departmentService.getAllDepartments();
       setDepartments(
         data.map((d) => ({ id: d.departmentId, name: d.departmentName }))
       );
     } catch (error) {
+      setError(error.message);
       console.error("Error fetching departments:", error);
     }
   };
 
-  // ✅ Add Department
   const addDepartment = async () => {
-    if (!newDepartment.name.trim()) {
-      console.error("Department name is required");
-      return;
-    }
+    if (!newDepartment.name.trim()) return;
 
     try {
-      const response = await fetch("/api/Department", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ departmentName: newDepartment.name }),
-      });
-
-      if (response.ok) {
-        setNewDepartment({ name: "" });
-        fetchDepartments();
-      } else {
-        console.error("Failed to add department");
-      }
+      await departmentService.createDepartment(newDepartment.name);
+      setNewDepartment({ name: "" });
+      fetchDepartments();
     } catch (error) {
+      setError(error.message);
       console.error("Error adding department:", error);
     }
   };
 
-  // ✅ Update Department (Fixes Undefined ID Issue)
   const updateDepartment = async () => {
-    if (!editDepartment.id || !editDepartment.name.trim()) {
-      console.error("Invalid department data for update");
-      return;
-    }
+    if (!editDepartment.id || !editDepartment.name.trim()) return;
 
     try {
-      const response = await fetch(`/api/Department/${editDepartment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          departmentId: editDepartment.id,
-          departmentName: editDepartment.name,
-        }),
-      });
-
-      if (response.ok) {
-        setEditDepartment({ id: null, name: "" });
-        fetchDepartments();
-      } else {
-        console.error("Failed to update department");
-      }
+      await departmentService.updateDepartment(
+        editDepartment.id,
+        editDepartment.name
+      );
+      setEditDepartment({ id: null, name: "" });
+      fetchDepartments();
     } catch (error) {
+      setError(error.message);
       console.error("Error updating department:", error);
     }
   };
 
-  // ✅ Delete Department (Fixes Undefined ID Issue)
   const deleteDepartment = async (id) => {
-    if (!id) {
-      console.error("Invalid ID for delete operation");
-      return;
-    }
-
     try {
-      const response = await fetch(`/api/Department/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        fetchDepartments();
-      } else {
-        console.error("Failed to delete department");
-      }
+      await departmentService.deleteDepartment(id);
+      fetchDepartments();
     } catch (error) {
+      setError(error.message);
       console.error("Error deleting department:", error);
     }
+  };
+
+  const handleDeleteClick = (id) => {
+    setDeleteConfirmation({ open: true, id: id });
+  };
+
+  const handleDeleteConfirm = async () => {
+    await deleteDepartment(deleteConfirmation.id);
+    setDeleteConfirmation({ open: false, id: null });
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmation({ open: false, id: null });
+  };
+
+  const handleEditClick = (id, name) => {
+    setEditConfirmation({ open: true, id: id, name: name });
+  };
+
+  const handleEditConfirm = () => {
+    setEditDepartment({ id: editConfirmation.id, name: editConfirmation.name });
+    setEditConfirmation({ open: false, id: null, name: "" });
+  };
+
+  const handleEditCancel = () => {
+    setEditConfirmation({ open: false, id: null, name: "" });
   };
 
   return (
@@ -128,6 +123,7 @@ const DepartmentCrud = () => {
         p: 2,
         bgcolor: "var(--card-bg-color)",
         color: "var(--text-color)",
+        border: "1px solid var(--divider-color)",
       }}
     >
       <CardContent>
@@ -145,7 +141,10 @@ const DepartmentCrud = () => {
           onChange={(e) =>
             setNewDepartment({ ...newDepartment, name: e.target.value })
           }
-          sx={{ mb: 2, bgcolor: "var(--input-bg-color)", borderRadius: 1 }}
+          sx={{
+            mb: 2,
+            borderRadius: 1,
+          }}
         />
         <Button
           variant="contained"
@@ -165,14 +164,13 @@ const DepartmentCrud = () => {
             <ListItem
               key={department.id}
               sx={{
-                bgcolor: "var(--bg-color) !important",
                 borderRadius: 1,
                 mb: 1,
                 p: 1,
                 display: "flex",
                 alignItems: "center",
                 color: "var(--text-color)",
-                border: "1px solid var(--text-color)", // Add this line to add a border
+                border: "1px solid var(--divider-color)", // Add this line to add a border
               }}
             >
               {editDepartment.id === department.id ? (
@@ -209,7 +207,7 @@ const DepartmentCrud = () => {
                 {editDepartment.id === department.id ? (
                   <>
                     <IconButton color="primary" onClick={updateDepartment}>
-                      <Edit />
+                      <Check />
                     </IconButton>
                     <IconButton
                       color="secondary"
@@ -223,17 +221,14 @@ const DepartmentCrud = () => {
                     <IconButton
                       color="primary"
                       onClick={() =>
-                        setEditDepartment({
-                          id: department.id,
-                          name: department.name,
-                        })
+                        handleEditClick(department.id, department.name)
                       }
                     >
                       <Edit />
                     </IconButton>
                     <IconButton
                       color="error"
-                      onClick={() => deleteDepartment(department.id)}
+                      onClick={() => handleDeleteClick(department.id)}
                     >
                       <Delete />
                     </IconButton>
@@ -244,6 +239,24 @@ const DepartmentCrud = () => {
           ))}
         </List>
       </CardContent>
+      <ConfirmationAlert
+        open={deleteConfirmation.open}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this department"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        itemName={departments.find((d) => d.id === deleteConfirmation.id)?.name}
+        type="delete" // Specify type as "delete"
+      />
+      <ConfirmationAlert
+        open={editConfirmation.open}
+        title="Confirm Edit"
+        message="Are you sure you want to edit this department"
+        onConfirm={handleEditConfirm}
+        onCancel={handleEditCancel}
+        itemName={editConfirmation.name}
+        type="edit" // Optionally specify type as "edit"
+      />
     </Card>
   );
 };

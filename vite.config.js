@@ -75,6 +75,12 @@ export default defineConfig({
                 target: 'https://localhost:7216/',
                 secure: false
             },
+            '^/api/Announcement': {
+                target: 'https://localhost:7216/',
+                secure: false,
+                changeOrigin: true,
+                withCredentials: true
+            },
         },
         port: 64919,
         https: {
