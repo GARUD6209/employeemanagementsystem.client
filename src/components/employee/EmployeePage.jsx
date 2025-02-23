@@ -77,7 +77,11 @@ const EmployeePage = () => {
 
   return (
     <div className="employee-page-container">
-      <Typography variant="h4" gutterBottom>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ textAlign: "center", color: "var(--text-color)" }}
+      >
         Employee Management
       </Typography>
       {error && <Alert severity="error">{error}</Alert>}

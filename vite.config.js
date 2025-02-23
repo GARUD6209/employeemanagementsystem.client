@@ -81,6 +81,11 @@ export default defineConfig({
                 changeOrigin: true,
                 withCredentials: true
             },
+            '^/api/Chat': {
+                target: 'https://localhost:7216/',
+                secure: false,
+                changeOrigin: true
+            },
         },
         port: 64919,
         https: {

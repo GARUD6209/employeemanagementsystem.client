@@ -13,6 +13,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import ChatIcon from "@mui/icons-material/Chat";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import {
   Divider,
@@ -23,10 +24,18 @@ import {
 } from "@mui/material";
 import LogoutLink from "../common/LogoutLink";
 
-const AdminSidebar = ({ setAuthorized, setUserRole }) => {
+const AdminSidebar = ({
+  setAuthorized,
+  setUserRole,
+  isCollapsed,
+  toggleCollapse,
+}) => {
   return (
-    <div className="sidebar">
-      <h3>EMS</h3>
+    <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">
+        <h3>EMS</h3>
+        <MenuIcon className="toggle-button" onClick={toggleCollapse} />
+      </div>
       <List>
         <ListItem button component={Link} to="/">
           <ListItemIcon>

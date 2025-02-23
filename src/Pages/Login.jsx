@@ -29,6 +29,12 @@ function Login({ setAuthorized }) {
     if (name === "rememberme") setRememberme(checked);
   };
 
+  const [showPassword, setShowPassword] = useState("password");
+
+  const handleClick = () => {
+    setShowPassword(showPassword === "password" ? "text" : "password");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -99,7 +105,7 @@ function Login({ setAuthorized }) {
               margin="normal"
               label="Password"
               variant="outlined"
-              type="password"
+              type={showPassword}
               name="password"
               value={password}
               onChange={handleChange}
@@ -108,6 +114,16 @@ function Login({ setAuthorized }) {
                 label: { color: "black" },
                 bgcolor: "var(--bg-color) !important",
               }} // Dark input styling
+              InputProps={{
+                endAdornment: (
+                  <Button
+                    onClick={handleClick}
+                    sx={{ color: "var(--bg-color)" }}
+                  >
+                    {showPassword === "password" ? "Show" : "Hide"}
+                  </Button>
+                ),
+              }}
             />
             <FormControlLabel
               control={

@@ -1,30 +1,3 @@
-/* :root {
-  --background-color: #1e1e1e;
-  --color: white;
-  --card-bg-color: #1e1e1e;
-  --text-color: white;
-  --input-bg-color: white;
-  --list-item-bg-color: #333;
-}
-
-[data-theme="light"] {
-  --background-color: #f0f0f0;
-  --color: #333333;
-  --card-bg-color: #ffffff;
-  --text-color: #333333;
-  --input-bg-color: #e0e0e0;
-  --list-item-bg-color: #ffffff;
-}
-
-[data-theme="dark"] {
-  --background-color: #1e1e1e;
-  --color: white;
-  --card-bg-color: #1e1e1e;
-  --text-color: white;
-  --input-bg-color: #333;
-  --list-item-bg-color: #333;
-} */
-
 .sidebar {
   width: 250px;
   height: 100vh;
@@ -35,7 +8,60 @@
   top: 0;
   left: 0;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 1200;
+  transition: width 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.collapsed {
+  width: 65px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.toggle-button {
+  color: var(--color);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.sidebar.collapsed .MuiListItemText-root {
+  display: none;
+}
+
+.sidebar.collapsed h3 {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 65px;
+  }
+
+  .sidebar .MuiListItemText-root {
+    display: none;
+  }
+
+  .sidebar h3 {
+    display: none;
+  }
+  
+  .sidebar.expanded {
+    width: 250px;
+  }
+
+  .sidebar.expanded .MuiListItemText-root {
+    display: block;
+  }
+
+  .sidebar.expanded h3 {
+    display: block;
+  }
 }
 
 .MuiListItem-root {
@@ -56,4 +82,14 @@
 .MuiDivider-root {
   background-color: rgba(255, 255, 255, 0.2) !important;
   margin: 8px 0 !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  display: flex;
+  min-height: 100vh;
 }
