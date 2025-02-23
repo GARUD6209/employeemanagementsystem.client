@@ -144,6 +144,14 @@ export const ChatRoom = () => {
                       ? "white"
                       : "var(--text-color)",
                   borderRadius: 2,
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    transform:
+                      message.senderId === currentUserId
+                        ? "translateX(-4px)"
+                        : "translateX(4px)",
+                    boxShadow: 2,
+                  },
                 }}
               >
                 <Typography variant="caption" sx={{ opacity: 0.7 }}>

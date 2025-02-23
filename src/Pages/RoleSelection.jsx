@@ -13,6 +13,7 @@ function RoleSelection({ setUserRole }) {
       navigate("/login?role=admin");
     } else if (role === "employee") {
       setUserRole("employee");
+      localStorage.setItem("userRole", "employee");
       navigate("/login?role=employee");
     }
   };

@@ -109,8 +109,11 @@ export const ChatRooms = () => {
                 onClick={() => navigate(`/chat/${room.chatRoomId}`)}
                 sx={{
                   cursor: "pointer",
+                  transition: "all 0.2s ease",
                   "&:hover": {
                     bgcolor: "action.hover",
+                    transform: "translateX(8px)",
+                    boxShadow: 1,
                   },
                   mb: 1,
                   borderRadius: 1,

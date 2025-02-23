@@ -39,8 +39,13 @@ function App() {
           const data = await response.json();
 
           setAuthorized(true);
-          setUserRole(data.roles[0].toLowerCase());
-          localStorage.setItem("userRole", data.roles[0]);
+          if (data.roles[0] === "Admin") {
+            setUserRole("admin");
+          } else {
+            setUserRole("employee");
+          }
+
+          // localStorage.setItem("userRole", data.roles[0].toLowerCase());
           localStorage.setItem("userId", data.userId);
         } else {
           setAuthorized(false);

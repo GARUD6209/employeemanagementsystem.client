@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function LogoutLink({ setAuthorized, setUserRole }) {
+function LogoutLink({ setAuthorized, setUserRole, children }) {
   const navigate = useNavigate();
 
   const handleLogoutSubmit = async (e) => {
@@ -29,9 +29,14 @@ function LogoutLink({ setAuthorized, setUserRole }) {
     <a
       href="#"
       onClick={handleLogoutSubmit}
-      style={{ textDecoration: "none", color: "var(--text-color)" }}
+      style={{
+        textDecoration: "none",
+        color: "var(--text-color)",
+        display: "flex",
+        alignItems: "center",
+      }}
     >
-      Logout
+      {children}
     </a>
   );
 }

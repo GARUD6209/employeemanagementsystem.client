@@ -20,6 +20,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import LogoutLink from "../common/LogoutLink";
+import { Logout } from "@mui/icons-material";
 
 const EmployeeSidebar = ({
   setAuthorized,
@@ -34,55 +35,55 @@ const EmployeeSidebar = ({
         <MenuIcon className="toggle-button" onClick={toggleCollapse} />
       </div>
       <List>
-        <ListItem button component={Link} to="/">
+        <ListItem component={Link} to="/">
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button component={Link} to="/announcements">
+        <ListItem component={Link} to="/announcements">
           <ListItemIcon>
             <AnnouncementIcon />
           </ListItemIcon>
           <ListItemText primary="Announcement Board" />
         </ListItem>
-        <ListItem button component={Link} to="/attendance">
+        <ListItem component={Link} to="/attendance">
           <ListItemIcon>
             <EventAvailableIcon />
           </ListItemIcon>
           <ListItemText primary="Mark Attendance" />
         </ListItem>
-        <ListItem button component={Link} to="/leave-request">
+        <ListItem component={Link} to="/leave-request">
           <ListItemIcon>
             <TimeToLeaveIcon />
           </ListItemIcon>
           <ListItemText primary="Leave Request" />
         </ListItem>
-        <ListItem button component={Link} to="/leave-list">
+        <ListItem component={Link} to="/leave-list">
           <ListItemIcon>
             <TimeToLeaveIcon />
           </ListItemIcon>
           <ListItemText primary="Leave List" />
         </ListItem>
-        <ListItem button component={Link} to="/tasks">
+        <ListItem component={Link} to="/tasks">
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
           <ListItemText primary="Task List" />
         </ListItem>
-        <ListItem button component={Link} to="/schedule">
+        <ListItem component={Link} to="/schedule">
           <ListItemIcon>
             <ScheduleIcon />
           </ListItemIcon>
           <ListItemText primary="Your Schedule" />
         </ListItem>
-        <ListItem button component={Link} to="/feedback">
+        <ListItem component={Link} to="/feedback">
           <ListItemIcon>
             <FeedbackIcon />
           </ListItemIcon>
           <ListItemText primary="Feedback" />
         </ListItem>
-        <ListItem button component={Link} to="/chat">
+        <ListItem component={Link} to="/chat">
           <ListItemIcon>
             <ChatIcon />
           </ListItemIcon>
@@ -90,7 +91,12 @@ const EmployeeSidebar = ({
         </ListItem>
         <Divider />
         <ListItem>
-          <LogoutLink setAuthorized={setAuthorized} setUserRole={setUserRole} />
+          <LogoutLink setAuthorized={setAuthorized} setUserRole={setUserRole}>
+            <ListItemIcon>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </LogoutLink>
         </ListItem>
       </List>
     </div>
