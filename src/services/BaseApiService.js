@@ -1,14 +1,26 @@
 import axios from 'axios';
 
 export class BaseApiService {
-    constructor(baseURL = 'https://localhost:7216') {
+    constructor() {
         this.api = axios.create({
-            baseURL,
             headers: {
                 'Content-Type': 'application/json'
             },
-            withCredentials: true,  // Add this to include cookies
+            withCredentials: true
         });
+
+        // Add response interceptor for error handling
+        this.api.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response?.status === 401) {
+                    throw new Error('Unauthorized access. Please ensure you are logged in.');
+                } else if (error.response?.status === 403) {
+                    throw new Error('Forbidden access. Please ensure you have proper permissions.');
+                }
+                throw error;
+            }
+        );
     }
 
     async get(url) {
@@ -18,23 +30,50 @@ export class BaseApiService {
         } catch (error) {
             if (error.response?.status === 401) {
                 throw new Error('Unauthorized access. Please ensure you are logged in.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Forbidden access. Please ensure you are logged in.');
+            }
+            throw error;
+        }
+
+    }
+
+    async post(url, data) {
+        try{
+        const response = await this.api.post(url, data);
+        return response.data; } catch (error) {
+            if (error.response?.status === 401) {
+                throw new Error('Unauthorized access. Please ensure you are logged in.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Forbidden access. Please ensure you are logged in.');
             }
             throw error;
         }
     }
 
-    async post(url, data) {
-        const response = await this.api.post(url, data);
-        return response.data;
-    }
-
     async put(url, data) {
-        const response = await this.api.put(url, data);
-        return response.data;
+        try{
+            const response = await this.api.put(url, data);
+            return response.data; } catch (error) {
+                if (error.response?.status === 401) {
+                    throw new Error('Unauthorized access. Please ensure you are logged in.');
+                } else if (error.response?.status === 403) {
+                    throw new Error('Forbidden access. Please ensure you are logged in.');
+                }
+                throw error;
+            }
     }
 
     async delete(url) {
+        try{
         const response = await this.api.delete(url);
-        return response.data;
+        return response.data;} catch (error) {
+            if (error.response?.status === 401) {
+                throw new Error('Unauthorized access. Please ensure you are logged in.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Forbidden access. Please ensure you are logged in.');
+            }
+            throw error;
+        }
     }
 }

@@ -1,29 +1,24 @@
+import { BaseApiService } from './BaseApiService';
 import Employee from '../models/employee.model';
 
-export class EmployeeService {
+export class EmployeeService extends BaseApiService {
     constructor() {
+        super();
         this.apiPrefix = '/api/Employee';
     }
 
     async getAllEmployees() {
-        const response = await fetch(this.apiPrefix);
-        const data = await response.json();
+        const data = await this.get(this.apiPrefix);
         return data.map(emp => Employee.fromJson(emp));
     }
 
     async getEmployeeById(id) {
-        const response = await fetch(`${this.apiPrefix}/${id}`);
-        const data = await response.json();
+        const data = await this.get(`${this.apiPrefix}/${id}`);
         return Employee.fromJson(data);
     }
 
     async createEmployee(employee) {
-        const response = await fetch(this.apiPrefix, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(employee)
-        });
-        const data = await response.json();
+        const data = await this.post(this.apiPrefix, employee);
         return Employee.fromJson(data);
     }
 
@@ -35,23 +30,11 @@ export class EmployeeService {
             trainingRequired: Boolean(employee.trainingRequired)
         };
         
-        const response = await fetch(`${this.apiPrefix}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formattedEmployee)
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || 'Failed to update employee');
-        }
-
-        return await response.json();
+        const data = await this.put(`${this.apiPrefix}/${id}`, formattedEmployee);
+        return Employee.fromJson(data);
     }
 
     async deleteEmployee(id) {
-        await fetch(`${this.apiPrefix}/${id}`, { method: 'DELETE' });
+        return await this.delete(`${this.apiPrefix}/${id}`);
     }
 }

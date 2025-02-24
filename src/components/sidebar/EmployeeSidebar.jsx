@@ -91,7 +91,7 @@ const EmployeeSidebar = ({
         </ListItem>
         <Divider />
         <ListItem>
-          <LogoutLink setAuthorized={setAuthorized} setUserRole={setUserRole}>
+          <LogoutLink>
             <ListItemIcon>
               <Logout />
             </ListItemIcon>

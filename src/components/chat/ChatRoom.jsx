@@ -4,15 +4,16 @@ import { ChatService } from "../../services/ChatService";
 import { Box, Paper, TextField, IconButton, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 
 export const ChatRoom = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { userId: currentUserId } = useAuth(); // Use useAuth to get userRole, selectedRole, and currentUserId
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const pollingInterval = useRef(null);
   const messagesEndRef = useRef(null);
-  const currentUserId = localStorage.getItem("userId");
   const chatService = new ChatService();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export const ChatRoom = () => {
   }, [id]);
 
   useEffect(() => {
-    scrollToBottom();
+    // scrollToBottom();
   }, [messages]);
 
   const startPolling = () => {

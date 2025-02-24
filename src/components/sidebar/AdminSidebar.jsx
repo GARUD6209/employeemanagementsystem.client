@@ -25,12 +25,7 @@ import {
 import LogoutLink from "../common/LogoutLink";
 import { Logout } from "@mui/icons-material";
 
-const AdminSidebar = ({
-  setAuthorized,
-  setUserRole,
-  isCollapsed,
-  toggleCollapse,
-}) => {
+const AdminSidebar = ({ isCollapsed, toggleCollapse }) => {
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
@@ -112,7 +107,7 @@ const AdminSidebar = ({
         </ListItem>
         <Divider />
         <ListItem>
-          <LogoutLink setAuthorized={setAuthorized} setUserRole={setUserRole}>
+          <LogoutLink>
             <ListItemIcon>
               <Logout />
             </ListItemIcon>

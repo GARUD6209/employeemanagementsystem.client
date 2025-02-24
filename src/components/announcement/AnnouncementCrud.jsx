@@ -1,3 +1,4 @@
+import { useAuth } from "../../contexts/AuthContext";
 import {
   Button,
   Card,
@@ -5,7 +6,6 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemSecondaryAction,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -22,18 +22,13 @@ const AnnouncementCrud = () => {
     open: false,
     id: null,
   });
-  const [editConfirmation, setEditConfirmation] = useState({
-    open: false,
-    id: null,
-    title: "",
-    content: "",
-  });
   const [error, setError] = useState("");
   const [dialogState, setDialogState] = useState({
     open: false,
     mode: "add",
     announcement: null,
   });
+  const { userRole } = useAuth();
 
   const announcementService = new AnnouncementService();
 
@@ -56,34 +51,18 @@ const AnnouncementCrud = () => {
   };
 
   const handleDeleteConfirm = async () => {
-    await deleteAnnouncement(deleteConfirmation.id);
-    setDeleteConfirmation({ open: false, id: null });
+    try {
+      await announcementService.deleteAnnouncement(deleteConfirmation.id);
+      await fetchAnnouncements(); // Fetch updated announcements after deletion
+      setDeleteConfirmation({ open: false, id: null });
+    } catch (error) {
+      setError(error.message);
+      console.error("Error deleting announcement:", error);
+    }
   };
 
   const handleDeleteCancel = () => {
     setDeleteConfirmation({ open: false, id: null });
-  };
-
-  const handleEditClick = (announcement) => {
-    setEditConfirmation({
-      open: true,
-      id: announcement.announcementId,
-      title: announcement.title,
-      content: announcement.content,
-    });
-  };
-
-  const handleEditConfirm = () => {
-    setEditAnnouncement({
-      id: editConfirmation.id,
-      title: editConfirmation.title,
-      content: editConfirmation.content,
-    });
-    setEditConfirmation({ open: false, id: null, title: "", content: "" });
-  };
-
-  const handleEditCancel = () => {
-    setEditConfirmation({ open: false, id: null, title: "", content: "" });
   };
 
   const handleAddNew = () => {
@@ -136,6 +115,14 @@ const AnnouncementCrud = () => {
     }
   };
 
+  const canManageAnnouncements = () => {
+    return userRole.toLowerCase() === "admin";
+  };
+
+  const isEmployee = () => {
+    return userRole.toLowerCase() === "employee";
+  };
+
   return (
     <Card
       sx={{
@@ -155,18 +142,20 @@ const AnnouncementCrud = () => {
           </Typography>
         )}
         <Typography variant="h4" align="center" gutterBottom>
-          Announcement Management
+          {isEmployee() ? "Announcements" : "Announcement Management"}
         </Typography>
 
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleAddNew}
-          sx={{ mb: 3 }}
-        >
-          Add New Announcement
-        </Button>
+        {canManageAnnouncements() && (
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={handleAddNew}
+            sx={{ mb: 3 }}
+          >
+            Add New Announcement
+          </Button>
+        )}
 
         {/* Announcements List */}
         <List>
@@ -181,6 +170,26 @@ const AnnouncementCrud = () => {
                 bgcolor: "var(--bg-color) !important",
                 color: "var(--text-color) !important",
               }}
+              secondaryAction={
+                canManageAnnouncements() && (
+                  <>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEdit(announcement)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      color="error"
+                      onClick={() =>
+                        handleDeleteClick(announcement.announcementId)
+                      }
+                    >
+                      <Delete />
+                    </IconButton>
+                  </>
+                )
+              }
             >
               <ListItemText
                 primary={announcement.title}
@@ -215,45 +224,37 @@ const AnnouncementCrud = () => {
                   color: "var(--text-color) !important",
                 }}
               />
-              <ListItemSecondaryAction>
-                <IconButton
-                  color="primary"
-                  onClick={() => handleEdit(announcement)}
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteClick(announcement.announcementId)}
-                >
-                  <Delete />
-                </IconButton>
-              </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
       </CardContent>
 
-      <AddEditAnnouncementDialog
-        open={dialogState.open}
-        onClose={handleDialogClose}
-        announcement={dialogState.announcement}
-        onSave={handleDialogSave}
-        mode={dialogState.mode}
-      />
+      {/* Only render dialogs if user is Admin */}
+      {canManageAnnouncements() && (
+        <>
+          <AddEditAnnouncementDialog
+            open={dialogState.open}
+            onClose={handleDialogClose}
+            announcement={dialogState.announcement}
+            onSave={handleDialogSave}
+            mode={dialogState.mode}
+          />
 
-      <ConfirmationAlert
-        open={deleteConfirmation.open}
-        title="Confirm Delete"
-        message="Are you sure you want to delete this announcement?"
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-        itemName={
-          announcements.find((a) => a.announcementId === deleteConfirmation.id)
-            ?.title
-        }
-        type="delete"
-      />
+          <ConfirmationAlert
+            open={deleteConfirmation.open}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this announcement?"
+            onConfirm={handleDeleteConfirm}
+            onCancel={handleDeleteCancel}
+            itemName={
+              announcements.find(
+                (a) => a.announcementId === deleteConfirmation.id
+              )?.title
+            }
+            type="delete"
+          />
+        </>
+      )}
     </Card>
   );
 };

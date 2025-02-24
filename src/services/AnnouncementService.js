@@ -1,29 +1,24 @@
+import { BaseApiService } from './BaseApiService';
 import Announcement from '../models/announcement.model';
 
-export class AnnouncementService {
+export class AnnouncementService extends BaseApiService {
     constructor() {
+        super();
         this.apiPrefix = '/api/Announcement';
     }
 
     async getAllAnnouncements() {
-        const response = await fetch(this.apiPrefix);
-        const data = await response.json();
+        const data = await this.get(this.apiPrefix);
         return data.map(ann => Announcement.fromJson(ann));
     }
 
     async getAnnouncementById(id) {
-        const response = await fetch(`${this.apiPrefix}/${id}`);
-        const data = await response.json();
+        const data = await this.get(`${this.apiPrefix}/${id}`);
         return Announcement.fromJson(data);
     }
 
     async createAnnouncement(announcement) {
-        const response = await fetch(this.apiPrefix, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(announcement)
-        });
-        const data = await response.json();
+        const data = await this.post(this.apiPrefix, announcement);
         return Announcement.fromJson(data);
     }
 
@@ -36,22 +31,11 @@ export class AnnouncementService {
             createdBy: announcement.createdBy || localStorage.getItem("userId")
         };
 
-        const response = await fetch(`${this.apiPrefix}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formattedAnnouncement)
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || 'Failed to update announcement');
-        }
-
-        const data = await response.json();
+        const data = await this.put(`${this.apiPrefix}/${id}`, formattedAnnouncement);
         return Announcement.fromJson(data);
     }
 
     async deleteAnnouncement(id) {
-        await fetch(`${this.apiPrefix}/${id}`, { method: 'DELETE' });
+        return await this.delete(`${this.apiPrefix}/${id}`);
     }
 }

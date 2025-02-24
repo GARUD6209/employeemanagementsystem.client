@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import EmployeeForm from "./EmployeeForm";
+import AddEmployeeForm from "./AddEmployeeForm";
+import EditEmployeeForm from "./EditEmployeeForm";
 import EmployeeList from "./EmployeeList";
-import { Typography, Container, CircularProgress, Alert } from "@mui/material";
+import { Typography, CircularProgress, Alert } from "@mui/material";
 import { EmployeeService } from "../../services/EmployeeService";
-import Employee from "../../models/employee.model";
+import { UserService } from "../../services/UserService"; // Import UserService
 import "./EmployeePage.css";
 
 const EmployeePage = () => {
   const [employees, setEmployees] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [addingEmployee, setAddingEmployee] = useState(false); // Add state for adding employee
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const employeeService = new EmployeeService();
+  const userService = new UserService(); // Initialize UserService
 
   useEffect(() => {
     fetchEmployees();
@@ -40,15 +43,19 @@ const EmployeePage = () => {
           employeeData
         );
       } else {
-        await employeeService.createEmployee(employeeData);
+        await userService.registerUser(employeeData); // Use UserService to register a new user
       }
       fetchEmployees();
       setEditingEmployee(null);
+      setAddingEmployee(false); // Reset addingEmployee state
       alert("Employee saved successfully!");
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message); // Improved error handling
       console.error("Error saving employee:", error);
-      alert("Error saving employee: " + error.message);
+      alert(
+        "Error saving employee: " +
+          (error.response?.data?.message || error.message)
+      );
     }
   };
 
@@ -88,18 +95,25 @@ const EmployeePage = () => {
       {loading ? (
         <CircularProgress />
       ) : editingEmployee ? (
-        <EmployeeForm
+        <EditEmployeeForm
           employee={editingEmployee}
           onSave={handleSave}
           onCancel={() => setEditingEmployee(null)}
         />
-      ) : (
-        <EmployeeList
-          employees={employees}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onAdd={() => setEditingEmployee({})}
+      ) : addingEmployee ? (
+        <AddEmployeeForm
+          onSave={handleSave}
+          onCancel={() => setAddingEmployee(false)}
         />
+      ) : (
+        <>
+          <EmployeeList
+            employees={employees}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAdd={() => setAddingEmployee(true)} // Set addingEmployee state to true
+          />
+        </>
       )}
     </div>
   );

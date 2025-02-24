@@ -1,29 +1,19 @@
 import React, { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import EmployeeSidebar from "./EmployeeSidebar";
+import { useAuth } from "../../contexts/AuthContext";
 
-const SidebarWrapper = ({
-  useRole,
-  setAuthorized,
-  setUserRole,
-  isCollapsed,
-  setIsCollapsed,
-}) => {
+const SidebarWrapper = ({ isCollapsed, setIsCollapsed }) => {
+  const { userRole } = useAuth();
+
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  return useRole === "admin" ? (
-    <AdminSidebar
-      setAuthorized={setAuthorized}
-      setUserRole={setUserRole}
-      isCollapsed={isCollapsed}
-      toggleCollapse={toggleCollapse}
-    />
+  return userRole === "admin" ? (
+    <AdminSidebar isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} />
   ) : (
     <EmployeeSidebar
-      setAuthorized={setAuthorized}
-      setUserRole={setUserRole}
       isCollapsed={isCollapsed}
       toggleCollapse={toggleCollapse}
     />

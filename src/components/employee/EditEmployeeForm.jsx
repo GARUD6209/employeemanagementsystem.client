@@ -12,7 +12,7 @@ import { DepartmentService } from "../../services/DepartmentService";
 import Employee from "../../models/employee.model";
 import "./EmployeePage.css";
 
-const EmployeeForm = ({ employee, onSave, onCancel }) => {
+const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
   const [formData, setFormData] = useState(new Employee());
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,13 +105,10 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
 
   return (
     <div className="form-container">
-      <h2>
-        {employee && employee.employeeId ? "Edit Employee" : "Add Employee"}
-      </h2>
+      <h2>Edit Employee</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          // Remove the transformation since it's already boolean
           onSave(formData);
         }}
       >
@@ -242,18 +239,6 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="User ID"
-              name="userId"
-              value={formData.userId}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
         </Grid>
         <div className="button-group">
           <Button
@@ -278,4 +263,4 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
   );
 };
 
-export default EmployeeForm;
+export default EditEmployeeForm;

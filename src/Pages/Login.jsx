@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TextField,
   Checkbox,
@@ -9,18 +9,26 @@ import {
   Container,
   FormControlLabel,
   Alert,
+  CircularProgress,
 } from "@mui/material";
+import { AuthService } from "../services/AuthService";
+import { useAuth } from "../contexts/AuthContext";
 import AuthPageWrapper from "../components/common/AuthPageWrapper";
 
-function Login({ setAuthorized }) {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberme, setRememberme] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
+  const { login, selectedRole, errorMessage, redirecting } = useAuth();
+  const authService = new AuthService();
 
-  const role = new URLSearchParams(location.search).get("role");
+  useEffect(() => {
+    if (!selectedRole) {
+      setTimeout(() => navigate("/", { replace: true }), 2000);
+    }
+  }, [selectedRole, navigate]);
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -35,128 +43,148 @@ function Login({ setAuthorized }) {
     setShowPassword(showPassword === "password" ? "text" : "password");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError("Please fill in all fields.");
-    } else {
+      return;
+    }
+
+    try {
       setError("");
-      const loginUrl = rememberme
-        ? `/login?useCookies=true&role=${role}`
-        : `/login?useSessionCookies=true&role=${role}`;
+      const loginSuccess = await login(
+        email,
+        password,
+        selectedRole,
+        rememberme
+      );
 
-      fetch(loginUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
-        .then((data) => {
-          if (data.ok) {
-            setAuthorized(true);
+      if (loginSuccess) {
+        // Verify user role after successful login
+        const authData = await authService.checkAuth();
 
-            navigate("/home");
-          } else {
-            setError("Error Logging In.");
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          setError("Error Logging in.");
-        });
+        if (authData.role.toLowerCase() !== selectedRole.toLowerCase()) {
+          setError(`Access denied. You don't have ${selectedRole} privileges.`);
+          await authService.logout(); // Logout if role doesn't match
+
+          return;
+        }
+
+        navigate("/home");
+      } else {
+        setError("Invalid credentials.");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Error logging in. Please try again.");
     }
   };
 
   return (
     <AuthPageWrapper>
-      <Container maxWidth="xs">
+      {redirecting ? (
         <Box
           sx={{
-            mt: 8,
-            p: 4,
-            boxShadow: 3,
-            borderRadius: 2,
-            bgcolor: "var(--bg-color) !important", // Dark mode friendly
-            color: "black", // White text for contrast
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
           }}
         >
-          <Typography variant="h5" align="center" gutterBottom>
-            Login as {role}
+          <CircularProgress sx={{ mb: 2 }} />
+          <Typography color="primary" variant="h6">
+            {errorMessage}
           </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Email"
-              variant="outlined"
-              type="email"
-              name="email"
-              value={email}
-              onChange={handleChange}
-              sx={{
-                input: { color: "black" },
-                label: { color: "black" },
-                bgcolor: "var(--bg-color) !important",
-              }} // Dark input styling
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Password"
-              variant="outlined"
-              type={showPassword}
-              name="password"
-              value={password}
-              onChange={handleChange}
-              sx={{
-                input: { color: "black" },
-                label: { color: "black" },
-                bgcolor: "var(--bg-color) !important",
-              }} // Dark input styling
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    onClick={handleClick}
-                    sx={{ color: "var(--bg-color)" }}
-                  >
-                    {showPassword === "password" ? "Show" : "Hide"}
-                  </Button>
-                ),
-              }}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="rememberme"
-                  checked={rememberme}
-                  onChange={handleChange}
-                  sx={{ color: "black" }}
-                />
-              }
-              label={
-                <Typography sx={{ color: "black" }}>Remember Me</Typography>
-              }
-            />
-            {error && (
-              <Alert
-                severity="error"
-                sx={{ mt: 2, bgcolor: "#D32F2F", color: "black" }}
-              >
-                {error}
-              </Alert>
-            )}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{ mt: 2, bgcolor: "#1976D2" }}
-            >
-              Login
-            </Button>
-          </form>
         </Box>
-      </Container>
+      ) : (
+        <Container maxWidth="xs">
+          <Box
+            sx={{
+              mt: 8,
+              p: 4,
+              boxShadow: 3,
+              borderRadius: 2,
+              bgcolor: "var(--bg-color) !important", // Dark mode friendly
+              color: "black", // White text for contrast
+            }}
+          >
+            <Typography variant="h5" align="center" gutterBottom>
+              Login as {selectedRole}
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Email"
+                variant="outlined"
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleChange}
+                sx={{
+                  input: { color: "black" },
+                  label: { color: "black" },
+                  bgcolor: "var(--bg-color) !important",
+                }} // Dark input styling
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Password"
+                variant="outlined"
+                type={showPassword}
+                name="password"
+                value={password}
+                onChange={handleChange}
+                sx={{
+                  input: { color: "black" },
+                  label: { color: "black" },
+                  bgcolor: "var(--bg-color) !important",
+                }} // Dark input styling
+                InputProps={{
+                  endAdornment: (
+                    <Button
+                      onClick={handleClick}
+                      sx={{ color: "var(--bg-color)" }}
+                    >
+                      {showPassword === "password" ? "Show" : "Hide"}
+                    </Button>
+                  ),
+                }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="rememberme"
+                    checked={rememberme}
+                    onChange={handleChange}
+                    sx={{ color: "black" }}
+                  />
+                }
+                label={
+                  <Typography sx={{ color: "black" }}>Remember Me</Typography>
+                }
+              />
+              {error && (
+                <Alert
+                  severity="error"
+                  sx={{ mt: 2, bgcolor: "#D32F2F", color: "black" }}
+                >
+                  {error}
+                </Alert>
+              )}
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ mt: 2, bgcolor: "#1976D2" }}
+              >
+                Login
+              </Button>
+            </form>
+          </Box>
+        </Container>
+      )}
     </AuthPageWrapper>
   );
 }

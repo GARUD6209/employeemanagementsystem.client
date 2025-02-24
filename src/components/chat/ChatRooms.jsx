@@ -114,6 +114,7 @@ export const ChatRooms = () => {
                     bgcolor: "action.hover",
                     transform: "translateX(8px)",
                     boxShadow: 1,
+                    color: "var(--text-color)",
                   },
                   mb: 1,
                   borderRadius: 1,
@@ -128,19 +129,27 @@ export const ChatRooms = () => {
                       <Typography
                         component="span"
                         variant="body2"
-                        sx={{ display: "block", opacity: 0.7 }}
+                        sx={{
+                          display: "block",
+                          opacity: 0.7,
+                          color: "var(--text-color)",
+                        }}
                       >
                         Created by: {room.createdBy}
                       </Typography>
                       <Typography
                         component="span"
                         variant="caption"
-                        sx={{ opacity: 0.5 }}
+                        sx={{ opacity: 0.5, color: "var(--text-color)" }}
                       >
                         {new Date(room.createdAt).toLocaleString()}
                       </Typography>
                     </>
                   }
+                  sx={{
+                    color: "var(--text-color)",
+                    bgcolor: "var(--card-bg-color)",
+                  }}
                 />
               </ListItem>
             ))}

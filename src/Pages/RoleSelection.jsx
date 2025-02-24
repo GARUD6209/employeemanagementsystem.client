@@ -3,19 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Container, Stack } from "@mui/material";
 import { AdminPanelSettings, Person } from "@mui/icons-material";
 import AuthPageWrapper from "../components/common/AuthPageWrapper";
+import { useAuth } from "../contexts/AuthContext";
 
-function RoleSelection({ setUserRole }) {
+function RoleSelection() {
   const navigate = useNavigate();
+  const { selectRole } = useAuth();
 
   const handleRoleSelect = (role) => {
-    if (role === "admin") {
-      setUserRole("admin");
-      navigate("/login?role=admin");
-    } else if (role === "employee") {
-      setUserRole("employee");
-      localStorage.setItem("userRole", "employee");
-      navigate("/login?role=employee");
-    }
+    selectRole(role);
+    navigate(`/login`);
   };
 
   return (
@@ -28,7 +24,7 @@ function RoleSelection({ setUserRole }) {
             justifyContent: "center",
             alignItems: "center",
             gap: 4,
-            py: 4, // Add padding top and bottom
+            py: 4,
           }}
         >
           <Typography

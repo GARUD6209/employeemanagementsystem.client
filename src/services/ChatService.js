@@ -1,33 +1,24 @@
-export class ChatService {
+import { BaseApiService } from './BaseApiService';
+
+export class ChatService extends BaseApiService {
     constructor() {
+        super();
         this.apiPrefix = '/api/Chat';
     }
 
     async getChatRooms() {
-        const response = await fetch(`${this.apiPrefix}/rooms`);
-        return await response.json();
+        return await this.get(`${this.apiPrefix}/rooms`);
     }
 
     async createChatRoom(name) {
-        const response = await fetch(`${this.apiPrefix}/rooms`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(name)
-        });
-        return await response.json();
+        return await this.post(`${this.apiPrefix}/rooms`, name);
     }
 
     async getChatMessages(roomId) {
-        const response = await fetch(`${this.apiPrefix}/rooms/${roomId}/messages`);
-        return await response.json();
+        return await this.get(`${this.apiPrefix}/rooms/${roomId}/messages`);
     }
 
     async sendMessage(roomId, message) {
-        const response = await fetch(`${this.apiPrefix}/rooms/${roomId}/messages`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(message)
-        });
-        return await response.json();
+        return await this.post(`${this.apiPrefix}/rooms/${roomId}/messages`, message);
     }
 }

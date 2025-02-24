@@ -47,45 +47,37 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/pingauth': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/register': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/login': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/logout': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/api/Department': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/api/Employee': {
-                target: 'https://localhost:7216/',
-                secure: false
-            },
-            '^/api/Announcement': {
-                target: 'https://localhost:7216/',
+            '/api': {
+                target: 'https://localhost:7216',
                 secure: false,
                 changeOrigin: true,
-                withCredentials: true
+                configure: (proxy, _options) => {
+                    proxy.on('error', (err, _req, _res) => {
+                        console.log('proxy error', err);
+                    });
+                    proxy.on('proxyReq', (proxyReq, req, _res) => {
+                        console.log('Sending Request:', req.method, req.url);
+                    });
+                    proxy.on('proxyRes', (proxyRes, req, _res) => {
+                        console.log('Received Response:', proxyRes.statusCode, req.url);
+                    });
+                }
             },
-            '^/api/Chat': {
-                target: 'https://localhost:7216/',
+            '/login': {
+                target: 'https://localhost:7216',
                 secure: false,
                 changeOrigin: true
             },
+            '/logout': {
+                target: 'https://localhost:7216',
+                secure: false,
+                changeOrigin: true
+            },
+            '/pingauth': {
+                target: 'https://localhost:7216',
+                secure: false,
+                changeOrigin: true
+            }
         },
         port: 64919,
         https: {

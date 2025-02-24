@@ -102,10 +102,10 @@ body[data-theme="dark"] {
   color: var(--color-dark);
 }
 
-input, .MuiListItemIcon-root, .MuiListItemText-primary, .MuiDivider-root {
+/* input, .MuiListItemIcon-root, .MuiListItemText-primary, .MuiDivider-root {
   background-color: var(--background-color);
   color: var(--color);
-}
+} */
 
 .MuiPaper-root, .MuiCard-root, .MuiButtonBase-root {
   background-color: var(--background-color);
