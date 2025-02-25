@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import AddEmployeeForm from "./AddEmployeeForm";
 import EditEmployeeForm from "./EditEmployeeForm";
 import EmployeeList from "./EmployeeList";
@@ -8,13 +9,14 @@ import { UserService } from "../../services/UserService"; // Import UserService
 import "./EmployeePage.css";
 
 const EmployeePage = () => {
+  const { userRole } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [editingEmployee, setEditingEmployee] = useState(null);
-  const [addingEmployee, setAddingEmployee] = useState(false); // Add state for adding employee
+  const [addingEmployee, setAddingEmployee] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const employeeService = new EmployeeService();
-  const userService = new UserService(); // Initialize UserService
+  const userService = new UserService();
 
   useEffect(() => {
     fetchEmployees();
@@ -60,6 +62,10 @@ const EmployeePage = () => {
   };
 
   const handleEdit = async (id) => {
+    if (userRole !== "admin") {
+      setError("Unauthorized to edit employees");
+      return;
+    }
     try {
       const employeeToEdit = await employeeService.getEmployeeById(id);
       setEditingEmployee(employeeToEdit);
@@ -70,6 +76,10 @@ const EmployeePage = () => {
   };
 
   const handleDelete = async (id) => {
+    if (userRole !== "admin") {
+      setError("Unauthorized to delete employees");
+      return;
+    }
     setError("");
     try {
       await employeeService.deleteEmployee(id);
@@ -99,6 +109,7 @@ const EmployeePage = () => {
           employee={editingEmployee}
           onSave={handleSave}
           onCancel={() => setEditingEmployee(null)}
+          formTitle={"Edit Employee"}
         />
       ) : addingEmployee ? (
         <AddEmployeeForm

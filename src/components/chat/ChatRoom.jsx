@@ -1,10 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChatService } from "../../services/ChatService";
 import { Box, Paper, TextField, IconButton, Typography } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
+import { EmployeeService } from "../../services/EmployeeService";
+import { formatDistanceToNow } from "date-fns";
+
+const formatMessageTime = (timestamp) => {
+  try {
+    const date = new Date(timestamp);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "Just now";
+    }
+    return formatDistanceToNow(date, { addSuffix: true });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Just now";
+  }
+};
 
 export const ChatRoom = () => {
   const { id } = useParams();
@@ -12,50 +28,126 @@ export const ChatRoom = () => {
   const { userId: currentUserId } = useAuth(); // Use useAuth to get userRole, selectedRole, and currentUserId
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [userNames, setUserNames] = useState(new Map());
+  const [error, setError] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
   const pollingInterval = useRef(null);
   const messagesEndRef = useRef(null);
+  const lastMessageTime = useRef(Date.now());
+  const typingTimeoutRef = useRef(null);
   const chatService = new ChatService();
+  const employeeService = new EmployeeService(); // Create an instance of EmployeeService
 
   useEffect(() => {
     loadMessages();
     startPolling();
 
-    return () => {
-      if (pollingInterval.current) clearInterval(pollingInterval.current);
-    };
+    return () => stopPolling();
   }, [id]);
 
   useEffect(() => {
-    // scrollToBottom();
+    const loadUserNames = async () => {
+      const newUserNames = new Map(userNames);
+      const uniqueUserIds = [...new Set(messages.map((m) => m.senderId))];
+
+      for (const userId of uniqueUserIds) {
+        if (!newUserNames.has(userId)) {
+          const name = await employeeService.getEmployeeFullNameByUserId(
+            userId
+          );
+          newUserNames.set(userId, name);
+        }
+      }
+
+      setUserNames(newUserNames);
+    };
+
+    loadUserNames();
   }, [messages]);
 
-  const startPolling = () => {
-    pollingInterval.current = setInterval(loadMessages, 3000);
-  };
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages]);
 
-  const loadMessages = async () => {
-    try {
-      const chatMessages = await chatService.getChatMessages(id);
-      setMessages(chatMessages);
-    } catch (error) {
-      console.error("Error loading messages:", error);
+  const stopPolling = () => {
+    if (pollingInterval.current) {
+      clearInterval(pollingInterval.current);
+      pollingInterval.current = null;
     }
   };
 
-  const sendMessage = async () => {
-    if (newMessage.trim()) {
-      try {
-        const message = await chatService.sendMessage(id, newMessage);
-        setMessages([...messages, message]);
-        setNewMessage("");
-      } catch (error) {
-        console.error("Error sending message:", error);
+  const loadMessages = useCallback(async () => {
+    try {
+      // Only fetch if more than 2 seconds have passed since last message
+      if (Date.now() - lastMessageTime.current < 2000) {
+        return;
       }
+
+      const chatMessages = await chatService.getChatMessages(id);
+      lastMessageTime.current = Date.now();
+
+      setMessages((prev) => {
+        // Only update if we have new messages
+        if (prev.length !== chatMessages.length) {
+          return chatMessages;
+        }
+        return prev;
+      });
+      setError(null);
+    } catch (error) {
+      console.error("Error loading messages:", error);
+      setError("Failed to load messages. Please try again later.");
+      stopPolling();
+    }
+  }, [id]);
+
+  const startPolling = useCallback(() => {
+    if (!pollingInterval.current) {
+      pollingInterval.current = setInterval(loadMessages, 3000);
+    }
+  }, [loadMessages]);
+
+  const sendMessage = async () => {
+    if (!newMessage.trim()) return;
+
+    try {
+      const message = await chatService.sendMessage(id, newMessage);
+      setMessages((prev) => [...prev, message]);
+      setNewMessage("");
+      lastMessageTime.current = Date.now();
+      scrollToBottom();
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setError("Failed to send message. Please try again.");
     }
   };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const groupMessagesBySender = useCallback((messages) => {
+    return messages.reduce((groups, message) => {
+      const lastGroup = groups[groups.length - 1];
+      if (lastGroup && lastGroup[0].senderId === message.senderId) {
+        lastGroup.push(message);
+      } else {
+        groups.push([message]);
+      }
+      return groups;
+    }, []);
+  }, []);
+
+  const handleTyping = () => {
+    setIsTyping(true);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+    }, 1000);
   };
 
   return (
@@ -119,47 +211,55 @@ export const ChatRoom = () => {
             },
           }}
         >
-          {messages.map((message) => (
+          {error && (
+            <Typography color="error" align="center" sx={{ py: 2 }}>
+              {error}
+            </Typography>
+          )}
+          {groupMessagesBySender(messages).map((group, groupIndex) => (
             <Box
-              key={message.id}
+              key={`group-${groupIndex}`}
               sx={{
                 display: "flex",
-                justifyContent:
-                  message.senderId === currentUserId
+                flexDirection: "column",
+                alignItems:
+                  group[0].senderId === currentUserId
                     ? "flex-end"
                     : "flex-start",
-                mb: 1,
+                mb: 2,
               }}
             >
-              <Paper
-                elevation={1}
-                sx={{
-                  p: 1,
-                  maxWidth: "70%",
-                  bgcolor:
-                    message.senderId === currentUserId
-                      ? "primary.main"
-                      : "var(--chat-message-bg)",
-                  color:
-                    message.senderId === currentUserId
-                      ? "white"
-                      : "var(--text-color)",
-                  borderRadius: 2,
-                  transition: "all 0.2s ease",
-                  "&:hover": {
-                    transform:
+              <Typography variant="caption" sx={{ opacity: 0.7, mb: 0.5 }}>
+                {userNames.get(group[0].senderId) || "Loading..."}
+              </Typography>
+              {group.map((message, index) => (
+                <Paper
+                  key={message.id}
+                  elevation={1}
+                  sx={{
+                    p: 1,
+                    mb: 0.5,
+                    maxWidth: "70%",
+                    bgcolor:
                       message.senderId === currentUserId
-                        ? "translateX(-4px)"
-                        : "translateX(4px)",
-                    boxShadow: 2,
-                  },
-                }}
-              >
-                <Typography variant="caption" sx={{ opacity: 0.7 }}>
-                  {message.senderId}
-                </Typography>
-                <Typography variant="body1">{message.content}</Typography>
-              </Paper>
+                        ? "primary.main"
+                        : "var(--chat-message-bg)",
+                    color:
+                      message.senderId === currentUserId
+                        ? "white"
+                        : "var(--text-color)",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Typography variant="body1">{message.content}</Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ opacity: 0.7, display: "block", textAlign: "right" }}
+                  >
+                    {formatMessageTime(message.timestamp)}
+                  </Typography>
+                </Paper>
+              ))}
             </Box>
           ))}
           <div ref={messagesEndRef} />
@@ -181,7 +281,10 @@ export const ChatRoom = () => {
             fullWidth
             size="small"
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              handleTyping();
+            }}
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Type a message..."
             sx={{
@@ -191,6 +294,14 @@ export const ChatRoom = () => {
               },
             }}
           />
+          {isTyping && (
+            <Typography
+              variant="caption"
+              sx={{ position: "absolute", top: -20, left: 16 }}
+            >
+              Someone is typing...
+            </Typography>
+          )}
           <IconButton
             color="primary"
             onClick={sendMessage}

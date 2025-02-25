@@ -76,4 +76,40 @@ export class BaseApiService {
             throw error;
         }
     }
+
+    async postFormData(url, formData) {
+        try {
+            const response = await this.api.post(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 401) {
+                throw new Error('Unauthorized access. Please ensure you are logged in.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Forbidden access. Please ensure you are logged in.');
+            }
+            throw error;
+        }
+    }
+
+    async putFormData(url, formData) {
+        try {
+            const response = await this.api.put(url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 401) {
+                throw new Error('Unauthorized access. Please ensure you are logged in.');
+            } else if (error.response?.status === 403) {
+                throw new Error('Forbidden access. Please ensure you are logged in.');
+            }
+            throw error;
+        }
+    }
 }

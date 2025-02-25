@@ -1,16 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import TimeToLeaveIcon from "@mui/icons-material/TimeToLeave";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-import FeedbackIcon from "@mui/icons-material/Feedback";
-import ChatIcon from "@mui/icons-material/Chat";
-import MenuIcon from "@mui/icons-material/Menu";
+import {
+  Dashboard as DashboardIcon,
+  Announcement as AnnouncementIcon,
+  EventAvailable as EventAvailableIcon,
+  TimeToLeave as TimeToLeaveIcon,
+  Assignment as AssignmentIcon,
+  Schedule as ScheduleIcon,
+  Feedback as FeedbackIcon,
+  Chat as ChatIcon,
+  Menu as MenuIcon,
+  Person as PersonIcon,
+  Logout,
+} from "@mui/icons-material";
 
 import {
   Divider,
@@ -20,14 +23,56 @@ import {
   ListItemText,
 } from "@mui/material";
 import LogoutLink from "../common/LogoutLink";
-import { Logout } from "@mui/icons-material";
 
-const EmployeeSidebar = ({
-  setAuthorized,
-  setUserRole,
-  isCollapsed,
-  toggleCollapse,
-}) => {
+const EmployeeSidebar = ({ isCollapsed, toggleCollapse }) => {
+  const menuItems = [
+    {
+      title: "My Profile",
+      path: "/employee-dashboard",
+      icon: <PersonIcon />,
+    },
+    {
+      title: "Announcement Board",
+      path: "/announcements",
+      icon: <AnnouncementIcon />,
+    },
+    {
+      title: "Mark Attendance",
+      path: "/attendance",
+      icon: <EventAvailableIcon />,
+    },
+    {
+      title: "Leave Request",
+      path: "/leave-request",
+      icon: <TimeToLeaveIcon />,
+    },
+    {
+      title: "Leave List",
+      path: "/leave-list",
+      icon: <TimeToLeaveIcon />,
+    },
+    {
+      title: "Task List",
+      path: "/employee-tasks",
+      icon: <AssignmentIcon />,
+    },
+    {
+      title: "Your Schedule",
+      path: "/schedule",
+      icon: <ScheduleIcon />,
+    },
+    {
+      title: "Feedback",
+      path: "/feedback",
+      icon: <FeedbackIcon />,
+    },
+    {
+      title: "Chat",
+      path: "/chat",
+      icon: <ChatIcon />,
+    },
+  ];
+
   return (
     <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
@@ -35,60 +80,12 @@ const EmployeeSidebar = ({
         <MenuIcon className="toggle-button" onClick={toggleCollapse} />
       </div>
       <List>
-        <ListItem component={Link} to="/">
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem component={Link} to="/announcements">
-          <ListItemIcon>
-            <AnnouncementIcon />
-          </ListItemIcon>
-          <ListItemText primary="Announcement Board" />
-        </ListItem>
-        <ListItem component={Link} to="/attendance">
-          <ListItemIcon>
-            <EventAvailableIcon />
-          </ListItemIcon>
-          <ListItemText primary="Mark Attendance" />
-        </ListItem>
-        <ListItem component={Link} to="/leave-request">
-          <ListItemIcon>
-            <TimeToLeaveIcon />
-          </ListItemIcon>
-          <ListItemText primary="Leave Request" />
-        </ListItem>
-        <ListItem component={Link} to="/leave-list">
-          <ListItemIcon>
-            <TimeToLeaveIcon />
-          </ListItemIcon>
-          <ListItemText primary="Leave List" />
-        </ListItem>
-        <ListItem component={Link} to="/tasks">
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="Task List" />
-        </ListItem>
-        <ListItem component={Link} to="/schedule">
-          <ListItemIcon>
-            <ScheduleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Your Schedule" />
-        </ListItem>
-        <ListItem component={Link} to="/feedback">
-          <ListItemIcon>
-            <FeedbackIcon />
-          </ListItemIcon>
-          <ListItemText primary="Feedback" />
-        </ListItem>
-        <ListItem component={Link} to="/chat">
-          <ListItemIcon>
-            <ChatIcon />
-          </ListItemIcon>
-          <ListItemText primary="Chat" />
-        </ListItem>
+        {menuItems.map((item) => (
+          <ListItem key={item.path} component={Link} to={item.path}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.title} />
+          </ListItem>
+        ))}
         <Divider />
         <ListItem>
           <LogoutLink>

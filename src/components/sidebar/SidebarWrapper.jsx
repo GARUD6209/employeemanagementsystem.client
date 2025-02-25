@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import EmployeeSidebar from "./EmployeeSidebar";
 import { useAuth } from "../../contexts/AuthContext";
+import { Person } from "@mui/icons-material";
+
+const employeeMenuItems = [
+  {
+    title: "My Dashboard",
+    path: "/employee-dashboard",
+    icon: <Person />,
+  },
+];
 
 const SidebarWrapper = ({ isCollapsed, setIsCollapsed }) => {
   const { userRole } = useAuth();
@@ -16,6 +25,7 @@ const SidebarWrapper = ({ isCollapsed, setIsCollapsed }) => {
     <EmployeeSidebar
       isCollapsed={isCollapsed}
       toggleCollapse={toggleCollapse}
+      menuItems={employeeMenuItems}
     />
   );
 };

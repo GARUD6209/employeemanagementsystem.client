@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const authData = await authService.checkAuth();
       setUserId(authData.userId);
-      updateAuthState(true, authData.role);
+      updateAuthState(true, authData.role.toLowerCase());
     } catch (error) {
       console.error("Auth check failed:", error);
       updateAuthState(false, "");

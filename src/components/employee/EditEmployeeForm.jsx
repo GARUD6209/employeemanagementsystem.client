@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   TextField,
   Button,
@@ -12,7 +13,9 @@ import { DepartmentService } from "../../services/DepartmentService";
 import Employee from "../../models/employee.model";
 import "./EmployeePage.css";
 
-const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
+const EditEmployeeForm = ({ employee, onSave, onCancel, formTitle }) => {
+  const { userRole } = useAuth();
+  const isAdmin = userRole === "admin";
   const [formData, setFormData] = useState(new Employee());
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,9 +76,24 @@ const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
     },
   };
 
+  const isFieldRestricted = (fieldName) => {
+    const restrictedFields = [
+      "salary",
+      "jobRole",
+      "departmentId",
+      "trainingRequired",
+    ];
+    return !isAdmin && restrictedFields.includes(fieldName);
+  };
+
   const departmentSelect = (
     <Grid item xs={12} sm={6}>
-      <FormControl variant="outlined" fullWidth required>
+      <FormControl
+        variant="outlined"
+        fullWidth
+        required
+        disabled={isFieldRestricted("departmentId")}
+      >
         <InputLabel style={{ color: "var(--color)" }}>Department</InputLabel>
         <Select
           name="departmentId"
@@ -105,7 +123,7 @@ const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
 
   return (
     <div className="form-container">
-      <h2>Edit Employee</h2>
+      <h2>{formTitle}</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -207,6 +225,7 @@ const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              disabled={isFieldRestricted("salary")}
               {...textFieldProps}
             />
           </Grid>
@@ -219,12 +238,18 @@ const EditEmployeeForm = ({ employee, onSave, onCancel }) => {
               required
               variant="outlined"
               fullWidth
+              disabled={isFieldRestricted("jobRole")}
               {...textFieldProps}
             />
           </Grid>
           {departmentSelect}
           <Grid item xs={12} sm={6}>
-            <FormControl variant="outlined" fullWidth required>
+            <FormControl
+              variant="outlined"
+              fullWidth
+              required
+              disabled={isFieldRestricted("trainingRequired")}
+            >
               <InputLabel style={{ color: "var(--color)" }}>
                 Training Required
               </InputLabel>

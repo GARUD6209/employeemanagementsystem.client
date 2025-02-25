@@ -17,9 +17,12 @@ import PublicNavbar from "./components/common/PublicNavbar";
 import { ChatRooms } from "./components/chat/ChatRooms";
 import { ChatRoom } from "./components/chat/ChatRoom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import AdminTaskManagement from "./components/tasks/AdminTaskManagement";
+import EmployeeTaskView from "./components/tasks/EmployeeTaskView";
+import EmployeeDashboard from "./components/employee/EmployeeDashboard";
 
 const AppContent = () => {
-  const { authorized, loading } = useAuth();
+  const { authorized, loading, userRole } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   if (loading) return <p>Loading...</p>;
@@ -54,6 +57,12 @@ const AppContent = () => {
               <Route path="/announcements" element={<AnnouncementCrud />} />
               <Route path="/chat" element={<ChatRooms />} />
               <Route path="/chat/:id" element={<ChatRoom />} />
+              <Route path="/tasks" element={<AdminTaskManagement />} />
+              <Route path="/employee-tasks" element={<EmployeeTaskView />} />
+              <Route
+                path="/employee-dashboard"
+                element={<EmployeeDashboard />}
+              />
               <Route path="*" element={<Navigate to="/" replace={true} />} />
             </Routes>
           </MainContent>

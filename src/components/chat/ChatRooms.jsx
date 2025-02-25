@@ -13,16 +13,20 @@ import {
   Divider,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { EmployeeService } from "../../services/EmployeeService";
 
 export const ChatRooms = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  // const [userNames, setUserNames] = useState(new Map());
   const chatService = new ChatService();
+  // const employeeService = new EmployeeService();
 
   useEffect(() => {
     loadChatRooms();
+    // loadUserNames();
   }, []);
 
   const loadChatRooms = async () => {
@@ -34,6 +38,20 @@ export const ChatRooms = () => {
       console.error("Error loading chat rooms:", error);
     }
   };
+
+  // const loadUserNames = async () => {
+  //   const newUserNames = new Map(userNames);
+  //   const uniqueUserIds = [...new Set(chatRooms.map((r) => r.createdBy))];
+
+  //   for (const userId of uniqueUserIds) {
+  //     if (!newUserNames.has(userId)) {
+  //       const name = await employeeService.getEmployeeFullNameByUserId(userId);
+  //       newUserNames.set(userId, name);
+  //     }
+  //   }
+
+  //   setUserNames(newUserNames);
+  // };
 
   const createRoom = async () => {
     if (!newRoomName.trim()) return;
@@ -135,7 +153,7 @@ export const ChatRooms = () => {
                           color: "var(--text-color)",
                         }}
                       >
-                        Created by: {room.createdBy}
+                        Created by:{}
                       </Typography>
                       <Typography
                         component="span"

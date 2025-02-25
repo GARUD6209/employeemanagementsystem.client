@@ -28,7 +28,7 @@ const AnnouncementCrud = () => {
     mode: "add",
     announcement: null,
   });
-  const { userRole } = useAuth();
+  const { userRole, userId } = useAuth();
 
   const announcementService = new AnnouncementService();
 
@@ -97,7 +97,7 @@ const AnnouncementCrud = () => {
 
       if (dialogState.mode === "add") {
         announcement.createdAt = new Date().toISOString();
-        announcement.createdBy = localStorage.getItem("userId");
+        announcement.createdBy = userId;
         await announcementService.createAnnouncement(announcement);
       } else {
         announcement.announcementId = dialogState.announcement.announcementId;

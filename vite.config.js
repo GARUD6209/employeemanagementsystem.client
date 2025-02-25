@@ -57,11 +57,18 @@ export default defineConfig({
                     });
                     proxy.on('proxyReq', (proxyReq, req, _res) => {
                         console.log('Sending Request:', req.method, req.url);
+                        // Don't override content-type for multipart/form-data
+                        if (!req.headers['content-type']?.includes('multipart/form-data')) {
+                            proxyReq.setHeader('Content-Type', 'application/json');
+                        }
                     });
                     proxy.on('proxyRes', (proxyRes, req, _res) => {
                         console.log('Received Response:', proxyRes.statusCode, req.url);
                     });
-                }
+                },
+                // Increase limit for file uploads
+                maxBodyLength: 104857600, // 100MB
+                timeout: 300000, // 5 minutes
             },
             '/login': {
                 target: 'https://localhost:7216',
