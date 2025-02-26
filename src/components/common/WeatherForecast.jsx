@@ -7,6 +7,12 @@ function WeatherForecast() {
     populateWeatherData();
   }, []);
 
+  const populateWeatherData = () => {
+    fetch("/WeatherForecast")
+      .then((response) => response.json())
+      .then((data) => setForecasts(data));
+  };
+
   const contents =
     forecasts.length === 0 ? (
       <p>
@@ -48,12 +54,8 @@ function WeatherForecast() {
       {contents}
     </div>
   );
-
-  async function populateWeatherData() {
-    const response = await fetch("weatherforecast");
-    const data = await response.json();
-    setForecasts(data);
-  }
 }
+// const data = await response.json();
+// setForecasts(data);
 
 export default WeatherForecast;

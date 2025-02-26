@@ -9,9 +9,9 @@ import {
   Dialog,
   DialogContent,
 } from "@mui/material";
-import { EmployeeService } from "../../services/EmployeeService";
-import EditEmployeeForm from "./EditEmployeeForm";
+import EditEmployeeForm from "../employee/EditEmployeeForm";
 import { useAuth } from "../../contexts/AuthContext";
+import { EmployeeService } from "../../services/EmployeeService";
 
 const EmployeeProfile = ({ employee }) => (
   <Grid container spacing={2}>

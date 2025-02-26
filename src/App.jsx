@@ -19,7 +19,11 @@ import { ChatRoom } from "./components/chat/ChatRoom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import AdminTaskManagement from "./components/tasks/AdminTaskManagement";
 import EmployeeTaskView from "./components/tasks/EmployeeTaskView";
-import EmployeeDashboard from "./components/employee/EmployeeDashboard";
+
+import { LeaveManagement } from "./components/leave/LeaveManagement.jsx";
+import { LeaveRequestForm } from "./components/leave/LeaveRequestForm.jsx";
+import { LeaveRequestList } from "./components/leave/LeaveRequestList.jsx";
+import EmployeeDashboard from "./components/dashboard/EmployeeDashboard.jsx";
 
 const AppContent = () => {
   const { authorized, loading, userRole } = useAuth();
@@ -50,7 +54,12 @@ const AppContent = () => {
           <MainContent isCollapsed={isCollapsed}>
             <Routes>
               <Route path="/" element={<Navigate to="/home" />} />
-              <Route path="/home" element={<Dashboard />} />
+              {userRole === "admin" ? (
+                <Route path="/home" element={<Dashboard />} />
+              ) : (
+                <Route path="/home" element={<EmployeeDashboard />} />
+              )}
+
               <Route path="/weatherApi" element={<WeatherForecast />} />
               <Route path="/add-department" element={<DepartmentCrud />} />
               <Route path="/employees" element={<EmployeePage />} />
@@ -59,6 +68,9 @@ const AppContent = () => {
               <Route path="/chat/:id" element={<ChatRoom />} />
               <Route path="/tasks" element={<AdminTaskManagement />} />
               <Route path="/employee-tasks" element={<EmployeeTaskView />} />
+              <Route path="leave-management" element={<LeaveManagement />} />
+              <Route path="/leave-request" element={<LeaveRequestForm />} />
+              <Route path="/leave-list" element={<LeaveRequestList />} />
               <Route
                 path="/employee-dashboard"
                 element={<EmployeeDashboard />}

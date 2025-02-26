@@ -15,19 +15,27 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import { EmployeeService } from "../../services/EmployeeService";
 
+import { useAuth } from "../../contexts/AuthContext";
+
 export const ChatRooms = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [newRoomName, setNewRoomName] = useState("");
   const [error, setError] = useState("");
+  const [userNames, setUserNames] = useState(new Map());
   const navigate = useNavigate();
-  // const [userNames, setUserNames] = useState(new Map());
+  const userRole = useAuth();
   const chatService = new ChatService();
-  // const employeeService = new EmployeeService();
+  const employeeService = new EmployeeService();
 
   useEffect(() => {
     loadChatRooms();
-    // loadUserNames();
   }, []);
+
+  useEffect(() => {
+    if (chatRooms.length > 0) {
+      loadUserNames();
+    }
+  }, [chatRooms]);
 
   const loadChatRooms = async () => {
     try {
@@ -39,19 +47,19 @@ export const ChatRooms = () => {
     }
   };
 
-  // const loadUserNames = async () => {
-  //   const newUserNames = new Map(userNames);
-  //   const uniqueUserIds = [...new Set(chatRooms.map((r) => r.createdBy))];
+  const loadUserNames = async () => {
+    const newUserNames = new Map(userNames);
+    const uniqueUserIds = [...new Set(chatRooms.map((r) => r.createdBy))];
 
-  //   for (const userId of uniqueUserIds) {
-  //     if (!newUserNames.has(userId)) {
-  //       const name = await employeeService.getEmployeeFullNameByUserId(userId);
-  //       newUserNames.set(userId, name);
-  //     }
-  //   }
+    for (const userId of uniqueUserIds) {
+      if (!newUserNames.has(userId)) {
+        const name = await employeeService.getEmployeeFullNameByUserId(userId);
+        newUserNames.set(userId, name);
+      }
+    }
 
-  //   setUserNames(newUserNames);
-  // };
+    setUserNames(newUserNames);
+  };
 
   const createRoom = async () => {
     if (!newRoomName.trim()) return;
@@ -153,7 +161,8 @@ export const ChatRooms = () => {
                           color: "var(--text-color)",
                         }}
                       >
-                        Created by:{}
+                        Created by:{" "}
+                        {userNames.get(room.createdBy) || "Loading..."}
                       </Typography>
                       <Typography
                         component="span"

@@ -3,4 +3,5 @@ export class ChatMessage {
     content;
     chatRoomId;
     senderId;
+    createdAt;
 }

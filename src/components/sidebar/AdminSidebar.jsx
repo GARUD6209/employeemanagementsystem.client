@@ -12,7 +12,6 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import ChatIcon from "@mui/icons-material/Chat";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import {
@@ -98,12 +97,6 @@ const AdminSidebar = ({ isCollapsed, toggleCollapse }) => {
             <ChatIcon />
           </ListItemIcon>
           <ListItemText primary="Chat" />
-        </ListItem>
-        <ListItem component={Link} to="/weatherApi">
-          <ListItemIcon>
-            <WbSunnyIcon />
-          </ListItemIcon>
-          <ListItemText primary="Weather API" />
         </ListItem>
         <Divider />
         <ListItem>

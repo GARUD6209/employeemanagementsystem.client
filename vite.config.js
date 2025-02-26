@@ -84,6 +84,11 @@ export default defineConfig({
                 target: 'https://localhost:7216',
                 secure: false,
                 changeOrigin: true
+            },
+            '/WeatherForecast': {
+                target: 'https://localhost:7216',
+                secure: false,
+                changeOrigin: true
             }
         },
         port: 64919,

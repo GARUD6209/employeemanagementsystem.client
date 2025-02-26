@@ -6,15 +6,25 @@ import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "../../contexts/AuthContext"; // Import useAuth
 import { EmployeeService } from "../../services/EmployeeService";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 const formatMessageTime = (timestamp) => {
   try {
-    const date = new Date(timestamp);
-    // Check if date is valid
+    let date;
+
+    if (typeof timestamp === "string") {
+      // Remove microseconds if present and convert to a valid ISO format
+      timestamp = timestamp.split(".")[0].replace(" ", "T") + "Z";
+      date = new Date(timestamp);
+    } else {
+      date = new Date(timestamp);
+    }
+
+    // Validate the date object
     if (isNaN(date.getTime())) {
       return "Just now";
     }
+
     return formatDistanceToNow(date, { addSuffix: true });
   } catch (error) {
     console.error("Error formatting date:", error);
@@ -114,6 +124,7 @@ export const ChatRoom = () => {
 
     try {
       const message = await chatService.sendMessage(id, newMessage);
+      message.createdAt = new Date().toISOString();
       setMessages((prev) => [...prev, message]);
       setNewMessage("");
       lastMessageTime.current = Date.now();
@@ -256,7 +267,7 @@ export const ChatRoom = () => {
                     variant="caption"
                     sx={{ opacity: 0.7, display: "block", textAlign: "right" }}
                   >
-                    {formatMessageTime(message.timestamp)}
+                    {formatMessageTime(message.createdAt)}
                   </Typography>
                 </Paper>
               ))}

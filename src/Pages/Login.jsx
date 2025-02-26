@@ -145,7 +145,7 @@ function Login() {
                   endAdornment: (
                     <Button
                       onClick={handleClick}
-                      sx={{ color: "var(--bg-color)" }}
+                      sx={{ color: "var(--text-color)" }}
                     >
                       {showPassword === "password" ? "Show" : "Hide"}
                     </Button>

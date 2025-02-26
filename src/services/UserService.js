@@ -14,4 +14,14 @@ export class UserService extends BaseApiService {
       throw new Error(error.response?.data?.message || error.message);
     }
   }
+
+  // https://localhost:7216/api/User/count/Admin
+  async countAdmin() {
+    try {
+      const response = await this.get(`${this.baseUrl}/count/Admin`);
+      return response;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+  }
 }
