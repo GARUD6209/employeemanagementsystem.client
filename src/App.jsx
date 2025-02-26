@@ -24,6 +24,10 @@ import { LeaveManagement } from "./components/leave/LeaveManagement.jsx";
 import { LeaveRequestForm } from "./components/leave/LeaveRequestForm.jsx";
 import { LeaveRequestList } from "./components/leave/LeaveRequestList.jsx";
 import EmployeeDashboard from "./components/dashboard/EmployeeDashboard.jsx";
+import AdminFeedback from "./components/feedback/AdminFeedback.jsx";
+import EmployeeFeedback from "./components/feedback/EmployeeFeedback.jsx";
+import AdminAttendance from "./components/attendance/AdminAttendance.jsx";
+import EmployeeAttendance from "./components/attendance/EmployeeAttendance.jsx";
 
 const AppContent = () => {
   const { authorized, loading, userRole } = useAuth();
@@ -71,6 +75,13 @@ const AppContent = () => {
               <Route path="leave-management" element={<LeaveManagement />} />
               <Route path="/leave-request" element={<LeaveRequestForm />} />
               <Route path="/leave-list" element={<LeaveRequestList />} />
+              <Route path="/feedback" element={<AdminFeedback />} />
+              <Route path="/create-feedback" element={<EmployeeFeedback />} />
+              <Route path="/attendance" element={<AdminAttendance />} />
+              <Route
+                path="/create-attendance"
+                element={<EmployeeAttendance />}
+              />
               <Route
                 path="/employee-dashboard"
                 element={<EmployeeDashboard />}

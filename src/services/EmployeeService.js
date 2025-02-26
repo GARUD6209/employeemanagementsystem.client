@@ -43,7 +43,7 @@ export class EmployeeService extends BaseApiService {
 
     async getEmployeeIdByUserId(userId) {
         const emp = await this.get(`${this.apiPrefix}/user/${userId}`)
-        console.log(emp);
+      
 
         return emp; 
     }

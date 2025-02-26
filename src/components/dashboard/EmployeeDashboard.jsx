@@ -12,29 +12,7 @@ import {
 import EditEmployeeForm from "../employee/EditEmployeeForm";
 import { useAuth } from "../../contexts/AuthContext";
 import { EmployeeService } from "../../services/EmployeeService";
-
-const EmployeeProfile = ({ employee }) => (
-  <Grid container spacing={2}>
-    <Grid item xs={12} sm={4}>
-      <img
-        src={employee.photo || "/default-avatar.png"}
-        alt={`${employee.firstName} ${employee.lastName}`}
-        style={{ width: "100%", borderRadius: "8px" }}
-      />
-    </Grid>
-    <Grid item xs={12} sm={8}>
-      <Typography variant="h5" gutterBottom>
-        {employee.firstName} {employee.lastName}
-      </Typography>
-      <Typography>Email: {employee.email}</Typography>
-      <Typography>Job Role: {employee.jobRole}</Typography>
-      <Typography>Department: {employee.departmentName}</Typography>
-      <Typography>Contact: {employee.contact}</Typography>
-      <Typography>Emergency Contact: {employee.emergencyContact}</Typography>
-      <Typography>Address: {employee.address}</Typography>
-    </Grid>
-  </Grid>
-);
+import Profile from "../common/Profile";
 
 const EmployeeDashboard = () => {
   const [employee, setEmployee] = useState(null);
@@ -119,7 +97,7 @@ const EmployeeDashboard = () => {
           </Button>
         </Box>
 
-        <EmployeeProfile employee={employee} />
+        <Profile employee={employee} />
 
         <Dialog
           open={isEditing}

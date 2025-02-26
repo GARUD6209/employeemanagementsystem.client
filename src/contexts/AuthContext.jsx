@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthService } from "../services/AuthService";
+import { EmployeeService } from "../services/EmployeeService";
 
 const AuthContext = createContext(null);
 
@@ -7,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [authorized, setAuthorized] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [userId, setUserId] = useState("");
+
   const [selectedRole, setSelectedRole] = useState(""); // Add this line
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");

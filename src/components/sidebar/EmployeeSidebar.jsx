@@ -38,7 +38,7 @@ const EmployeeSidebar = ({ isCollapsed, toggleCollapse }) => {
     },
     {
       title: "Mark Attendance",
-      path: "/attendance",
+      path: "/create-attendance",
       icon: <EventAvailableIcon />,
     },
     {
@@ -63,7 +63,7 @@ const EmployeeSidebar = ({ isCollapsed, toggleCollapse }) => {
     },
     {
       title: "Feedback",
-      path: "/feedback",
+      path: "/create-feedback",
       icon: <FeedbackIcon />,
     },
     {

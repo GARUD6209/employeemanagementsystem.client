@@ -20,10 +20,6 @@ const Dashboard = () => {
       setAdminCount(data.filter((emp) => emp.jobRole === "Admin").length);
     });
 
-    // {
-    //   "role": "Admin",
-    //   "userCount": 2
-    // }
     userServices.countAdmin().then((data) => {
       setAdminCount(data.userCount);
     });
