@@ -28,9 +28,11 @@ import AdminFeedback from "./components/feedback/AdminFeedback.jsx";
 import EmployeeFeedback from "./components/feedback/EmployeeFeedback.jsx";
 import AdminAttendance from "./components/attendance/AdminAttendance.jsx";
 import EmployeeAttendance from "./components/attendance/EmployeeAttendance.jsx";
+import EmployeeScheduleCalendar from "./components/schedule/EmployeeScheduleCalendar.jsx";
+import AdminAddEmployeeSchedule from "./components/schedule/AdminAddEmployeeSchedule.jsx";
 
 const AppContent = () => {
-  const { authorized, loading, userRole } = useAuth();
+  const { authorized, loading, userRole, employeeId } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   if (loading) return <p>Loading...</p>;
@@ -78,6 +80,14 @@ const AppContent = () => {
               <Route path="/feedback" element={<AdminFeedback />} />
               <Route path="/create-feedback" element={<EmployeeFeedback />} />
               <Route path="/attendance" element={<AdminAttendance />} />
+              <Route
+                path="/schedule"
+                element={<EmployeeScheduleCalendar employeeId={employeeId} />}
+              />
+              <Route
+                path="/employee-schedule"
+                element={<AdminAddEmployeeSchedule />}
+              />
               <Route
                 path="/create-attendance"
                 element={<EmployeeAttendance />}

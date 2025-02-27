@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  use,
+} from "react";
 import { AuthService } from "../services/AuthService";
 import { EmployeeService } from "../services/EmployeeService";
 
@@ -8,12 +14,13 @@ export const AuthProvider = ({ children }) => {
   const [authorized, setAuthorized] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [userId, setUserId] = useState("");
-
-  const [selectedRole, setSelectedRole] = useState(""); // Add this line
+  const [employeeId, setEmployeeId] = useState(0);
+  const [selectedRole, setSelectedRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [redirecting, setRedirecting] = useState(false);
   const authService = new AuthService();
+  const employeeService = new EmployeeService();
 
   useEffect(() => {
     checkAuthStatus();
@@ -30,6 +37,38 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      console.log("Fetching employee ID..." + "userId: " + userId);
+      fetchEmployeeId();
+      console.log("Employee ID fetched:", employeeId);
+    }
+  }, [userId]);
+
+  const fetchEmployeeId = async () => {
+    try {
+      const data = await employeeService.getEmployeeIdByUserId(userId);
+      console.log("Raw employee ID response:", data); // Debug log
+
+      // Handle both object and direct value responses
+      const employeeId = typeof data === "object" ? data.employeeId : data;
+      console.log("Processed employee ID:", employeeId);
+
+      if (employeeId === undefined || employeeId === null) {
+        throw new Error("Invalid employee ID received");
+      }
+
+      updateEmployeeId(employeeId);
+    } catch (error) {
+      console.error("Error fetching employee ID:", error);
+      updateEmployeeId(null);
+    }
+  };
+
+  const updateEmployeeId = (id) => {
+    setEmployeeId(id);
   };
 
   const updateAuthState = (isAuthorized, role) => {
@@ -96,6 +135,7 @@ export const AuthProvider = ({ children }) => {
     userId,
     selectedRole,
     loading,
+    employeeId,
     login,
     logout,
     checkAuthStatus,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid2 as Grid, Paper, Typography, Box } from "@mui/material";
+import { Grid, Paper, Typography, Box } from "@mui/material";
 import adminIcon from "../../assets/admin-icon.png";
 import employeeIcon from "../../assets/employee-icon.png";
 import salaryIcon from "../../assets/salary-icon.png";
