@@ -34,6 +34,7 @@ const Profile = ({ employee }) => {
         <Typography variant="h5" gutterBottom>
           {employee.firstName} {employee.lastName}
         </Typography>
+        <Typography>Id: {employee.employeeId}</Typography>
         <Typography>Email: {employee.email}</Typography>
         <Typography>Job Role: {employee.jobRole}</Typography>
         <Typography>Department: {department}</Typography>

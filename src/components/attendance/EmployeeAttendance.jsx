@@ -16,7 +16,7 @@ import {
 import { styled } from "@mui/material/styles";
 import AttendanceService from "../../services/AttendanceService";
 import { useAuth } from "../../contexts/AuthContext";
-import { EmployeeService } from "../../services/EmployeeService";
+import { getCurrentTimeISO } from "../../utils/dateUtils"; // Import the utility function
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: "var(--bg-color)",
@@ -64,32 +64,17 @@ const EmployeeAttendance = () => {
   const [attendanceList, setAttendanceList] = useState([]);
   const [loading, setLoading] = useState(false);
   const attendanceService = new AttendanceService();
-  const [employeeId, setEmployeeId] = useState("");
-  const { userId } = useAuth();
-  const employeeService = new EmployeeService();
+  const { userId, employeeId } = useAuth();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [todayAttendance, setTodayAttendance] = useState(null);
 
   useEffect(() => {
-    // Fetch employeeId when the component mounts
-    const fetchEmployeeId = async () => {
-      const id = await employeeService.getEmployeeIdByUserId(userId);
-      setEmployeeId(id);
-    };
-    fetchEmployeeId();
-  }, [userId, employeeService]);
-
-  useEffect(() => {
-    fetchAttendance();
-  }, [employeeId]);
-
-  useEffect(() => {
     if (employeeId) {
-      console.log("Checking today's attendance for employee:", employeeId);
+      fetchAttendance();
       checkTodayAttendance();
     }
-  }, [employeeId, attendanceList]); // Add attendanceList as dependency
+  }, [employeeId]);
 
   const fetchAttendance = async () => {
     try {
@@ -97,7 +82,11 @@ const EmployeeAttendance = () => {
       const data = await attendanceService.getAttendanceByEmployeeId(
         employeeId
       );
-      setAttendanceList(data);
+      // Sort by latest first
+      const sortedData = [...data].sort(
+        (a, b) => new Date(b.checkIn) - new Date(a.checkIn)
+      );
+      setAttendanceList(sortedData);
     } catch (error) {
       message.error("Failed to fetch attendance records");
     } finally {
@@ -116,10 +105,9 @@ const EmployeeAttendance = () => {
       const todayRecord = data.find(
         (att) => new Date(att.checkIn).toDateString() === today
       );
-      console.log("Today's attendance record:", todayRecord);
+
       setTodayAttendance(todayRecord || null);
     } catch (error) {
-      console.error("Failed to check today's attendance:", error);
       message.error("Failed to check today's attendance");
     }
   };
@@ -138,7 +126,7 @@ const EmployeeAttendance = () => {
 
       const attendance = {
         employeeId: employeeId,
-        checkIn: new Date().toISOString(),
+        checkIn: getCurrentTimeISO(), // Use the utility function here
         status: "Present",
       };
 
@@ -169,7 +157,7 @@ const EmployeeAttendance = () => {
     try {
       await attendanceService.updateCheckOutStatus(
         todayAttendance.attendanceId,
-        new Date().toISOString()
+        getCurrentTimeISO() // Use the utility function here
       );
       message.success("Check-out successful");
       checkTodayAttendance();
@@ -186,6 +174,11 @@ const EmployeeAttendance = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const getLatestAttendance = () => {
+    if (attendanceList.length === 0) return null;
+    return attendanceList[0]; // First item is the latest due to sorting
   };
 
   return (
@@ -226,6 +219,51 @@ const EmployeeAttendance = () => {
           </StyledButton>
         </Box>
       </StyledPaper>
+
+      {/* Latest Update Section */}
+      {getLatestAttendance() && (
+        <StyledPaper elevation={2} sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2, color: "var(--text-color)" }}>
+            Latest Attendance Record
+          </Typography>
+          <Box sx={{ display: "flex", gap: 4 }}>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Date
+              </Typography>
+              <Typography>
+                {new Date(getLatestAttendance().checkIn).toLocaleDateString()}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Check In
+              </Typography>
+              <Typography>
+                {new Date(getLatestAttendance().checkIn).toLocaleTimeString()}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Check Out
+              </Typography>
+              <Typography>
+                {getLatestAttendance().checkOut
+                  ? new Date(
+                      getLatestAttendance().checkOut
+                    ).toLocaleTimeString()
+                  : "-"}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary">
+                Status
+              </Typography>
+              <Typography>{getLatestAttendance().status}</Typography>
+            </Box>
+          </Box>
+        </StyledPaper>
+      )}
 
       <StyledPaper elevation={2}>
         <StyledTableContainer>

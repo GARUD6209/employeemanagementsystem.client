@@ -97,6 +97,13 @@ button:focus-visible {
 [data-theme="light"] {
   --background-color: var(--background-color-light);
   --color: var(--color-light);
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, 0.23);
+  --text-color: rgba(0, 0, 0, 0.87);
+  --calendar-icon-filter: invert(0.4);
+  --calendar-bg: transparent;
+  --calendar-hover-bg: rgba(0, 0, 0, 0.05);
+  --calendar-color-scheme: light;
 }
 
 [data-theme="dark"] {
@@ -118,7 +125,7 @@ button:focus-visible {
   --table-hover: #2d2d2d;
   --paper-bg: #1e1e1e;
   --input-bg: #333333;
-  --input-border: #444444;
+  --input-border: rgba(255, 255, 255, 0.23);
   --text-primary: #ffffff;
   --text-secondary: #b3b3b3;
   --button-hover: #2d2d2d;
@@ -130,6 +137,10 @@ button:focus-visible {
   --error-hover-color: #d32f2f;
   --warning-color: #ffa726;
   --warning-hover-color: #ff9800;
+  --calendar-icon-filter: invert(1);
+  --calendar-bg: transparent;
+  --calendar-hover-bg: rgba(255, 255, 255, 0.1);
+  --calendar-color-scheme: dark;
 }
 
 body[data-theme="light"] {

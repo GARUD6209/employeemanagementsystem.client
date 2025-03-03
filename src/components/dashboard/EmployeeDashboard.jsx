@@ -18,18 +18,18 @@ const EmployeeDashboard = () => {
   const [employee, setEmployee] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { userId, userRole } = useAuth();
+  const { userRole, employeeId } = useAuth();
   const employeeService = new EmployeeService();
 
   useEffect(() => {
     loadEmployeeData();
-  }, [userId]);
+  }, [employeeId]);
 
   const loadEmployeeData = async () => {
     try {
-      const employeeId = await employeeService.getEmployeeIdByUserId(userId);
       if (employeeId) {
         const employeeData = await employeeService.getEmployeeById(employeeId);
+        employeeData.employeeId = employeeId;
         setEmployee(employeeData);
       }
     } catch (error) {
@@ -42,7 +42,7 @@ const EmployeeDashboard = () => {
   const handleEditSave = async (updatedEmployee) => {
     try {
       // Only allow updating non-restricted fields for employees
-      if (userRole !== "admin") {
+      if (userRole == "employee") {
         const restrictedFields = [
           "salary",
           "jobRole",

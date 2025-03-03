@@ -13,8 +13,31 @@ export class AttendanceService extends BaseApiService {
     }
 
     async getAttendanceByEmployeeId(employeeId) {
-        const data = await this.get(`${this.apiPrefix}/employee/${employeeId}`);
-        return data.map(att => Attendance.fromJson(att));
+        try {
+            const response = await this.get(`${this.apiPrefix}/employee/${employeeId}`);
+            console.log('Raw API response:', response); // Debug log
+
+            // Handle different response structures
+            let attendanceData;
+            if (response?.data) {
+                attendanceData = response.data;
+            } else if (Array.isArray(response)) {
+                attendanceData = response;
+            } else if (response) {
+                attendanceData = [response];
+            } else {
+                throw new Error('Invalid response format');
+            }
+
+            // Ensure we have an array
+            const dataArray = Array.isArray(attendanceData) ? attendanceData : [attendanceData];
+            
+            // Map to Attendance model
+            return dataArray.map(att => Attendance.fromJson(att));
+        } catch (error) {
+            console.error('Detailed error:', error);
+            throw new Error(`Failed to fetch attendance: ${error.message}`);
+        }
     }
 
     async getAttendanceByDay(day) {

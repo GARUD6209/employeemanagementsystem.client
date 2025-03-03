@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (userId) {
-      console.log("Fetching employee ID..." + "userId: " + userId);
       fetchEmployeeId();
       console.log("Employee ID fetched:", employeeId);
     }
@@ -50,25 +49,18 @@ export const AuthProvider = ({ children }) => {
   const fetchEmployeeId = async () => {
     try {
       const data = await employeeService.getEmployeeIdByUserId(userId);
-      console.log("Raw employee ID response:", data); // Debug log
 
-      // Handle both object and direct value responses
       const employeeId = typeof data === "object" ? data.employeeId : data;
-      console.log("Processed employee ID:", employeeId);
 
       if (employeeId === undefined || employeeId === null) {
         throw new Error("Invalid employee ID received");
       }
 
-      updateEmployeeId(employeeId);
+      setEmployeeId(employeeId);
     } catch (error) {
       console.error("Error fetching employee ID:", error);
       updateEmployeeId(null);
     }
-  };
-
-  const updateEmployeeId = (id) => {
-    setEmployeeId(id);
   };
 
   const updateAuthState = (isAuthorized, role) => {

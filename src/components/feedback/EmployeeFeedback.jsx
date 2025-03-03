@@ -22,18 +22,8 @@ const EmployeeFeedback = () => {
     severity: "success",
   });
   const feedbackService = new FeedbackService();
-  const [employeeId, setEmployeeId] = useState("");
-  const { userId } = useAuth();
-  const employeeService = new EmployeeService();
 
-  useEffect(() => {
-    // Fetch employeeId when the component mounts
-    const fetchEmployeeId = async () => {
-      const id = await employeeService.getEmployeeIdByUserId(userId);
-      setEmployeeId(id);
-    };
-    fetchEmployeeId();
-  }, [userId, employeeService]);
+  const { employeeId } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

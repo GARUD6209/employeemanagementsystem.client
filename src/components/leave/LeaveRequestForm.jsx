@@ -2,21 +2,22 @@ import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { LeaveRequest } from "../../models/LeaveRequest";
 import { leaveRequestService } from "../../services/LeaveRequestService";
+import CustomDatePicker from "../common/CustomDatePicker";
 import {
-  TextField,
-  Button,
   Box,
   Paper,
   Typography,
   MenuItem,
+  TextField,
+  Button,
 } from "@mui/material";
 
 export const LeaveRequestForm = ({ onSubmitSuccess }) => {
   const auth = useAuth();
   const [formData, setFormData] = useState({
     leaveType: "",
-    startDate: "",
-    endDate: "",
+    startDate: new Date(), // Changed to use Date object
+    endDate: new Date(), // Changed to use Date object
   });
 
   const leaveTypes = [
@@ -31,6 +32,10 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
     return null;
   }
 
+  const handleDateChange = (field) => (date) => {
+    setFormData({ ...formData, [field]: date });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!auth?.userId) {
@@ -41,7 +46,9 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
     try {
       const leaveRequest = new LeaveRequest({
         userId: auth.userId,
-        ...formData,
+        leaveType: formData.leaveType,
+        startDate: formData.startDate.toISOString(),
+        endDate: formData.endDate.toISOString(),
       });
       await leaveRequestService.createLeaveRequest(leaveRequest);
       onSubmitSuccess();
@@ -58,7 +65,7 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
         backgroundColor: "var(--paper-bg)",
         borderRadius: "8px",
         border: "1px solid var(--divider-color)",
-        padding: "16px",
+        mt: 5,
       }}
     >
       <Typography
@@ -76,17 +83,9 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          "& .MuiTextField-root": { mb: 2 },
-          "& .MuiInputBase-root": {
-            backgroundColor: "var(--input-bg)",
-            color: "var(--text-primary)",
-            "& fieldset": {
-              borderColor: "var(--input-border)",
-            },
-            "&:hover fieldset": {
-              borderColor: "var(--primary-color)",
-            },
-          },
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
         }}
       >
         <TextField
@@ -99,11 +98,18 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
           }
           required
           sx={{
+            backgroundColor: "var(--input-bg)",
             "& .MuiInputLabel-root": {
               color: "var(--text-secondary)",
             },
             "& .MuiSelect-icon": {
               color: "var(--text-secondary)",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "var(--input-border)",
+            },
+            "& .MuiInputBase-input": {
+              color: "var(--text-color)",
             },
           }}
         >
@@ -114,29 +120,31 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
           ))}
         </TextField>
 
-        <TextField
-          fullWidth
-          type="date"
-          label="Start Date"
-          value={formData.startDate}
-          onChange={(e) =>
-            setFormData({ ...formData, startDate: e.target.value })
-          }
-          required
-          InputLabelProps={{ shrink: true }}
-        />
+        <Box>
+          <Typography
+            variant="subtitle2"
+            sx={{ mb: 1, color: "var(--text-secondary)" }}
+          >
+            Start Date
+          </Typography>
+          <CustomDatePicker
+            value={formData.startDate}
+            onChange={handleDateChange("startDate")}
+          />
+        </Box>
 
-        <TextField
-          fullWidth
-          type="date"
-          label="End Date"
-          value={formData.endDate}
-          onChange={(e) =>
-            setFormData({ ...formData, endDate: e.target.value })
-          }
-          required
-          InputLabelProps={{ shrink: true }}
-        />
+        <Box>
+          <Typography
+            variant="subtitle2"
+            sx={{ mb: 1, color: "var(--text-secondary)" }}
+          >
+            End Date
+          </Typography>
+          <CustomDatePicker
+            value={formData.endDate}
+            onChange={handleDateChange("endDate")}
+          />
+        </Box>
 
         <Button
           type="submit"
@@ -145,11 +153,12 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
           sx={{
             mt: 2,
             backgroundColor: "var(--primary-color)",
-            "&:hover": {
-              backgroundColor: "var(--hover-color)",
-            },
             color: "white",
             fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "var(--primary-color)",
+              opacity: 0.9,
+            },
           }}
         >
           Submit Request
