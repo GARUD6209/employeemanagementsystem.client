@@ -59,7 +59,6 @@ export const AuthProvider = ({ children }) => {
       setEmployeeId(employeeId);
     } catch (error) {
       console.error("Error fetching employee ID:", error);
-      updateEmployeeId(null);
     }
   };
 

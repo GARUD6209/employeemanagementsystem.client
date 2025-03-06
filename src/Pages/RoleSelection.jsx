@@ -31,7 +31,7 @@ function RoleSelection() {
             variant="h3"
             component="h1"
             gutterBottom
-            color="text.primary"
+            color="var(--primary-color)"
           >
             Select Your Role
           </Typography>
