@@ -9,7 +9,7 @@ const AuthPageWrapper = ({ children }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundImage: `url("/src/assets/background-image.jpg")`,
+        backgroundImage: `url("/assets/background-image.png")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
