@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  use,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthService } from "../services/AuthService";
 import { EmployeeService } from "../services/EmployeeService";
 
@@ -15,7 +9,9 @@ export const AuthProvider = ({ children }) => {
   const [userRole, setUserRole] = useState("");
   const [userId, setUserId] = useState("");
   const [employeeId, setEmployeeId] = useState(0);
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState(
+    () => localStorage.getItem("selectedRole") || ""
+  );
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [redirecting, setRedirecting] = useState(false);
@@ -110,6 +106,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.logout();
       updateAuthState(false, "");
+      clearRole();
     } catch (error) {
       console.error("Logout failed:", error);
       throw error;
@@ -117,7 +114,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const selectRole = (role) => {
-    setSelectedRole(role.toLowerCase());
+    const lowercaseRole = role.toLowerCase();
+    setSelectedRole(lowercaseRole);
+    localStorage.setItem("selectedRole", lowercaseRole);
+    sessionStorage.setItem("selectedRole", lowercaseRole); // Add session storage for redundancy
+  };
+
+  const clearRole = () => {
+    setSelectedRole("");
+    localStorage.removeItem("selectedRole");
+    sessionStorage.removeItem("selectedRole");
+  };
+
+  // Add this method to check if role is valid
+  const isValidRole = () => {
+    return (
+      selectedRole && ["admin", "employee"].includes(selectedRole.toLowerCase())
+    );
   };
 
   const value = {
@@ -134,6 +147,8 @@ export const AuthProvider = ({ children }) => {
     selectRole, // Add this to exposed values
     errorMessage,
     redirecting,
+    isValidRole,
+    clearRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

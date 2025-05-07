@@ -25,10 +25,40 @@ function Login() {
   const authService = new AuthService();
 
   useEffect(() => {
-    if (!selectedRole) {
-      setTimeout(() => navigate("/", { replace: true }), 2000);
-    }
+    const checkRole = async () => {
+      if (
+        !selectedRole ||
+        !["admin", "employee"].includes(selectedRole.toLowerCase())
+      ) {
+        setError("Invalid role selected");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        navigate("/", { replace: true });
+      }
+    };
+
+    checkRole();
   }, [selectedRole, navigate]);
+
+  // If no role is selected, show loading or redirect immediately
+  if (!selectedRole) {
+    return (
+      <AuthPageWrapper>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 4,
+          }}
+        >
+          <CircularProgress sx={{ mb: 2 }} />
+          <Typography color="primary" variant="h6">
+            No role selected. Redirecting to role selection...
+          </Typography>
+        </Box>
+      </AuthPageWrapper>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
@@ -45,6 +75,12 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedRole) {
+      setError("No role selected. Please select a role first.");
+      setTimeout(() => navigate("/", { replace: true }), 1000);
+      return;
+    }
+
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;

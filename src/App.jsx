@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import ThemeToggle from "./components/common/ThemeToggle.jsx";
 import Login from "./Pages/Login.jsx";
 import Register from "./Pages/Register.jsx";
@@ -107,12 +107,12 @@ const AppContent = () => {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
         <ThemeToggle />
         <AppContent />
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
