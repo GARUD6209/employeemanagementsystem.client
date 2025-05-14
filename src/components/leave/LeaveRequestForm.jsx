@@ -10,15 +10,18 @@ import {
   MenuItem,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
 
 export const LeaveRequestForm = ({ onSubmitSuccess }) => {
   const auth = useAuth();
   const [formData, setFormData] = useState({
     leaveType: "",
-    startDate: new Date(), // Changed to use Date object
-    endDate: new Date(), // Changed to use Date object
+    startDate: new Date(),
+    endDate: new Date(),
   });
+
+  const [loading, setLoading] = useState(false); // <-- loading state added
 
   const leaveTypes = [
     "Annual Leave",
@@ -38,10 +41,13 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!auth?.userId) {
       console.error("No user ID available");
       return;
     }
+
+    setLoading(true); // Start loading
 
     try {
       const leaveRequest = new LeaveRequest({
@@ -50,10 +56,13 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
         startDate: formData.startDate.toISOString(),
         endDate: formData.endDate.toISOString(),
       });
+
       await leaveRequestService.createLeaveRequest(leaveRequest);
       onSubmitSuccess();
     } catch (error) {
       console.error("Failed to submit leave request:", error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -79,6 +88,7 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
       >
         New Leave Request
       </Typography>
+
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -150,6 +160,7 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
           type="submit"
           variant="contained"
           fullWidth
+          disabled={loading}
           sx={{
             mt: 2,
             backgroundColor: "var(--primary-color)",
@@ -161,7 +172,11 @@ export const LeaveRequestForm = ({ onSubmitSuccess }) => {
             },
           }}
         >
-          Submit Request
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: "white" }} />
+          ) : (
+            "Submit Request"
+          )}
         </Button>
       </Box>
     </Paper>

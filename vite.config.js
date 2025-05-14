@@ -35,7 +35,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7216';
+    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://52.66.255.111:5000';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -49,7 +49,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://localhost:7216',
+                target: 'http://52.66.255.111:5000',
                 secure: false,
                 changeOrigin: true,
                 configure: (proxy, _options) => {
@@ -72,22 +72,22 @@ export default defineConfig({
                 timeout: 300000, // 5 minutes
             },
             '/login': {
-                target: 'https://localhost:7216',
+                target: 'http://52.66.255.111:5000',
                 secure: false,
                 changeOrigin: true
             },
             '/logout': {
-                target: 'https://localhost:7216',
+                target: 'http://52.66.255.111:5000',
                 secure: false,
                 changeOrigin: true
             },
             '/pingauth': {
-                target: 'https://localhost:7216',
+                target: 'http://52.66.255.111:5000',
                 secure: false,
                 changeOrigin: true
             },
             '/WeatherForecast': {
-                target: 'https://localhost:7216',
+                target: 'http://52.66.255.111:5000',
                 secure: false,
                 changeOrigin: true
             }
