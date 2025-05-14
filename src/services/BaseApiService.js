@@ -3,6 +3,7 @@ import axios from 'axios';
 export class BaseApiService {
     constructor() {
         this.api = axios.create({
+            baseURL: import.meta.env.VITE_API_BASE_URL,
             headers: {
                 'Content-Type': 'application/json'
             },
