@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (userId) {
       fetchEmployeeId();
-      console.log("Employee ID fetched:", employeeId);
+      // console.log("Employee ID fetched:", employeeId);
     }
   }, [userId]);
 

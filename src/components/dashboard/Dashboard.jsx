@@ -17,7 +17,7 @@ const Dashboard = () => {
     employeeService.getAllEmployees().then((data) => {
       setEmployeeCount(data.length);
       setSalary(data.reduce((acc, curr) => acc + curr.salary, 0));
-      setAdminCount(data.filter((emp) => emp.jobRole === "Admin").length);
+      // Removed setAdminCount here to avoid overwriting
     });
 
     userServices.countAdmin().then((data) => {

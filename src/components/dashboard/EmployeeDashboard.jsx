@@ -22,22 +22,32 @@ const EmployeeDashboard = () => {
   const employeeService = new EmployeeService();
 
   useEffect(() => {
-    loadEmployeeData();
-  }, [employeeId]);
-
-  const loadEmployeeData = async () => {
-    try {
-      if (employeeId) {
-        const employeeData = await employeeService.getEmployeeById(employeeId);
-        employeeData.employeeId = employeeId;
-        setEmployee(employeeData);
-      }
-    } catch (error) {
-      console.error("Error loading employee data:", error);
-    } finally {
-      setLoading(false);
+    if (employeeId) {
+      const loadEmployeeData = async () => {
+        try {
+          // console.log("Fetching employee data for ID:", employeeId);
+          const employeeData = await employeeService.getEmployeeById(
+            employeeId
+          );
+          // console.log("API response for employee:", employeeData);
+          if (!employeeData || Object.keys(employeeData).length === 0) {
+            setEmployee(null);
+            alert("No employee data returned from API.");
+          } else {
+            employeeData.employeeId = employeeId;
+            setEmployee(employeeData);
+          }
+        } catch (error) {
+          console.error("Error loading employee data:", error);
+          alert("Failed to load employee data. " + (error?.message || ""));
+          setEmployee(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadEmployeeData();
     }
-  };
+  }, [employeeId]);
 
   const handleEditSave = async (updatedEmployee) => {
     try {
