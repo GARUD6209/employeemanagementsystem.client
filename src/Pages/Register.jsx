@@ -69,7 +69,12 @@ function Register() {
             color: "black", // Light text color
           }}
         >
-          <Typography variant="h5" align="center" gutterBottom>
+          <Typography
+            variant="h5"
+            align="center"
+            color="var(--text-color)"
+            gutterBottom
+          >
             Register
           </Typography>
           <form onSubmit={handleSubmit}>

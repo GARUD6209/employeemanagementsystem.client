@@ -144,7 +144,12 @@ function Login() {
               color: "black", // White text for contrast
             }}
           >
-            <Typography variant="h5" align="center" gutterBottom>
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{ color: "var(--text-color)" }} // White text for contrast
+              gutterBottom
+            >
               Login as {selectedRole}
             </Typography>
             <form onSubmit={handleSubmit}>
@@ -194,11 +199,13 @@ function Login() {
                     name="rememberme"
                     checked={rememberme}
                     onChange={handleChange}
-                    sx={{ color: "black" }}
+                    sx={{ color: "var(--text-color)" }}
                   />
                 }
                 label={
-                  <Typography sx={{ color: "black" }}>Remember Me</Typography>
+                  <Typography sx={{ color: "var(--text-color)" }}>
+                    Remember Me
+                  </Typography>
                 }
               />
               {error && (

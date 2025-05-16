@@ -61,8 +61,11 @@ const AdminTaskManagement = () => {
             sx={{
               backgroundColor: "var(--primary-color)",
               color: "var(--text-primary)",
-              "&:hover": { backgroundColor: "var(--hover-color)" },
-
+              "&:hover": {
+                backgroundColor: "var(--primary-hover-color, #1976d2)",
+                color: "var(--text-primary)",
+                filter: "brightness(0.95)",
+              },
               mr: 2,
             }}
             onClick={() => setView("assignTask")}
@@ -73,11 +76,17 @@ const AdminTaskManagement = () => {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: "var(--secondary-color)",
+              backgroundColor: "var(--bg-color)",
               color: "var(--text-primary)",
+              mr: 2,
               "&:hover": {
-                backgroundColor: "var(--hover-color)",
-                mr: 2,
+                backgroundColor: "var(--secondary-hover-color, #e0e0e0)",
+                color: "var(--text-primary)",
+                filter: "brightness(0.55)",
+              },
+              "&.Mui-disabled": {
+                backgroundColor: "#eee",
+                color: "#bbb",
               },
             }}
             onClick={() => setView("taskList")}

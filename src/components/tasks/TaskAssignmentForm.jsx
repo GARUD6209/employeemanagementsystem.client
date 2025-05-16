@@ -79,6 +79,9 @@ const TaskAssignmentForm = ({ onSubmit, employees }) => {
           required
           type="datetime-local"
           label="Deadline"
+          sx={{
+            colorScheme: "var(--calendar-color-scheme)",
+          }}
           InputLabelProps={{ shrink: true }}
           value={formData.deadline}
           onChange={(e) =>
