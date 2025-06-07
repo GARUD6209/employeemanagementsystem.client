@@ -8,6 +8,11 @@ import {
   TableCell,
   TableBody,
   IconButton,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -84,113 +89,183 @@ const EmployeeList = ({ employees, onEdit, onDelete, onAdd }) => {
     setDeleteConfirmation({ open: false, id: null });
   };
 
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+
   return (
-    <div className="employee-list-container">
-      <h2 className="title">Employee List</h2>
-      <div className="search-add-container">
-        <TextField
-          label="Search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          variant="outlined"
-          className="search-bar"
-          InputLabelProps={{
-            style: { color: "var(--color)" },
-          }}
-          InputProps={{
-            style: { color: "var(--color)" },
-          }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={onAdd}
-          className="add-btn"
-        >
-          Add Employee
-        </Button>
-      </div>
-      <div className="employee-table-wrapper">
-        <Table className="employee-table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Employee ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Photo</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Contact</TableCell>
-              <TableCell>Emergency Contact</TableCell>
-              <TableCell>Salary</TableCell>
-              <TableCell>Job Role</TableCell>
-              <TableCell>Department</TableCell>
-              <TableCell>Training Required</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredEmployees.map((emp) => (
-              <TableRow key={emp.employeeId}>
-                <TableCell>{emp.employeeId}</TableCell>
-                <TableCell>{`${emp.firstName} ${emp.lastName}`}</TableCell>
-                <TableCell>
-                  <img src={emp.photo} alt="Profile" className="profile-img" />
-                </TableCell>
-                <TableCell>{emp.email}</TableCell>
-                <TableCell>{emp.address}</TableCell>
-                <TableCell>{emp.contact}</TableCell>
-                <TableCell>{emp.emergencyContact}</TableCell>
-                <TableCell>{emp.salary}</TableCell>
-                <TableCell>{emp.jobRole}</TableCell>
-                <TableCell>
-                  {departments[emp.departmentId] || emp.departmentId}
-                </TableCell>
-                <TableCell>{emp.trainingRequired ? "Yes" : "No"}</TableCell>
-                <TableCell>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleEditClick(emp.employeeId)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => handleDeleteClick(emp.employeeId)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+    <>
+      <div
+        className="employee-list-container"
+        sx={{ color: "var(--color)", backgroundColor: "var(--bg-color)" }}
+      >
+        <h2 className="title">Employee List</h2>
+        <div className="search-add-container">
+          <TextField
+            label="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            variant="outlined"
+            className="search-bar"
+            sx={{ color: "var(--color)", backgroundColor: "var(--bg-color)" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={onAdd}
+            className="add-btn"
+            sx={{ color: "var(--color)", backgroundColor: "var(--bg-color)" }}
+          >
+            Add Employee
+          </Button>
+        </div>
+        <div className="employee-table-wrapper">
+          <Table
+            className="employee-table"
+            sx={{ color: "var(--color)", backgroundColor: "var(--bg-color)" }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Employee ID</TableCell>
+                <TableCell>SamagraId</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Photo</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Gender</TableCell>
+                <TableCell>City</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Contact</TableCell>
+                <TableCell>Emergency Contact</TableCell>
+                <TableCell>Salary</TableCell>
+                <TableCell>Job Role</TableCell>
+                <TableCell>Department</TableCell>
+                <TableCell>Training Required</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      <ConfirmationAlert
-        open={deleteConfirmation.open}
-        title="Confirm Delete"
-        message="Are you sure you want to delete this employee"
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-        itemName={
-          employees.find((emp) => emp.employeeId === deleteConfirmation.id)
-            ?.firstName
-        }
-        type="delete" // Specify type as "delete"
-      />
-      <ConfirmationAlert
-        open={editConfirmation.open}
-        title="Confirm Edit"
-        message="Are you sure you want to edit this employee"
-        onConfirm={handleEditConfirm}
-        onCancel={handleEditCancel}
-        itemName={
-          employees.find((emp) => emp.employeeId === editConfirmation.id)
-            ?.firstName
-        }
-        type="edit" // Optionally specify type as "edit"
-      />
-    </div>
+            </TableHead>
+            <TableBody>
+              {filteredEmployees.map((emp) => (
+                <TableRow key={emp.employeeId}>
+                  <TableCell>{emp.employeeId}</TableCell>
+                  <TableCell>{emp.samagraId}</TableCell>
+                  <TableCell>{`${emp.firstName} ${emp.lastName}`}</TableCell>
+                  <TableCell>
+                    <img
+                      src={`data:image/jpeg;base64,${emp.photo}`}
+                      alt="Profile"
+                      className="profile-img"
+                    />
+                  </TableCell>
+                  <TableCell>{emp.email}</TableCell>
+                  <TableCell>{emp.gender}</TableCell>
+                  <TableCell>{emp.district}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedAddress(emp.address);
+                        setAddressModalOpen(true);
+                      }}
+                      sx={{
+                        color: "var(--color)",
+                        backgroundColor: "var(--bg-color)",
+                      }}
+                    >
+                      View Address
+                    </Button>
+                  </TableCell>
+                  <TableCell>{emp.contact}</TableCell>
+                  <TableCell>{emp.emergencyContact}</TableCell>
+                  <TableCell>{emp.salary}</TableCell>
+                  <TableCell>{emp.jobRole}</TableCell>
+                  <TableCell>
+                    {departments[emp.departmentId] || emp.departmentId}
+                  </TableCell>
+                  <TableCell>{emp.trainingRequired ? "Yes" : "No"}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEditClick(emp.employeeId)}
+                      sx={{ color: "var(--color)" }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleDeleteClick(emp.employeeId)}
+                      sx={{ color: "var(--color)" }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <ConfirmationAlert
+          open={deleteConfirmation.open}
+          title="Confirm Delete"
+          message="Are you sure you want to delete this employee"
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+          itemName={
+            employees.find((emp) => emp.employeeId === deleteConfirmation.id)
+              ?.firstName
+          }
+          type="delete"
+        />
+        <ConfirmationAlert
+          open={editConfirmation.open}
+          title="Confirm Edit"
+          message="Are you sure you want to edit this employee"
+          onConfirm={handleEditConfirm}
+          onCancel={handleEditCancel}
+          itemName={
+            employees.find((emp) => emp.employeeId === editConfirmation.id)
+              ?.firstName
+          }
+          type="edit"
+        />
+      </div>{" "}
+      <Dialog
+        open={addressModalOpen}
+        onClose={() => setAddressModalOpen(false)}
+        aria-labelledby="address-dialog-title"
+        PaperProps={{
+          sx: {
+            backgroundColor: "var(--bg-color)",
+            color: "var(--color)",
+            "& .MuiDialogTitle-root": {
+              color: "var(--color)",
+            },
+            "& .MuiDialogContentText-root": {
+              color: "var(--color)",
+            },
+          },
+        }}
+      >
+        <DialogTitle id="address-dialog-title">Employee Address</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{selectedAddress}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setAddressModalOpen(false)}
+            variant="contained"
+            sx={{
+              color: "var(--color)",
+              backgroundColor: "var(--primary-color)",
+              "&:hover": {
+                backgroundColor: "var(--primary-color-dark)",
+              },
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
