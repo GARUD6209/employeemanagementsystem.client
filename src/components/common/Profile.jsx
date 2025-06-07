@@ -25,7 +25,11 @@ const Profile = ({ employee }) => {
     <Grid container spacing={2}>
       <Grid item xs={12} sm={4}>
         <img
-          src={employee.photo || "/default-avatar.png"}
+          src={
+            employee.photo
+              ? `data:image/jpeg;base64,${employee.photo}`
+              : "/default-avatar.png"
+          }
           alt={`${employee.firstName} ${employee.lastName}`}
           style={{ width: "100%", borderRadius: "8px" }}
         />
