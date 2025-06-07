@@ -1,125 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  TextField,
   Button,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
 } from "@mui/material";
-import { DepartmentService } from "../../services/DepartmentService";
-import { RegisterUserModel } from "../../models/RegisterUserModel";
 import "./EmployeePage.css";
+import SamagraSection from "./form-sections/SamagraSection";
+import PersonalInfoSection from "./form-sections/PersonalInfoSection";
+import EmploymentSection from "./form-sections/EmploymentSection";
+import { useEmployeeForm } from "./hooks/useEmployeeForm";
 
 const AddEmployeeForm = ({ onSave, onCancel }) => {
-  const [formData, setFormData] = useState(new RegisterUserModel()); // Ensure trainingRequired is false
-  const [departments, setDepartments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const departmentService = new DepartmentService();
-
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  const fetchDepartments = async () => {
-    try {
-      const data = await departmentService.getAllDepartments();
-      setDepartments(data);
-    } catch (error) {
-      console.error("Error fetching departments:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      const newData = { ...prevData };
-      if (name === "departmentId") {
-        newData[name] = value === "" ? "" : Number(value);
-      } else if (name === "salary") {
-        newData[name] = Number(value);
-      } else if (name === "trainingRequired") {
-        newData[name] = value === "true"; // Convert to boolean
-      } else {
-        newData[name] = value;
-      }
-      return newData;
-    });
-  };
-
-  const textFieldProps = {
-    InputLabelProps: {
-      style: { color: "var(--color)" },
-    },
-    InputProps: {
-      style: { color: "var(--color)" },
-    },
-    sx: {
-      "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: "var(--color)",
-      },
-    },
-  };
-
-  const departmentSelect = (
-    <Grid item xs={12} sm={6}>
-      <FormControl variant="outlined" fullWidth required>
-        <InputLabel style={{ color: "var(--color)" }}>Department</InputLabel>
-        <Select
-          name="departmentId"
-          value={formData.departmentId || ""}
-          onChange={handleChange}
-          label="Department"
-          sx={{
-            textAlign: "left",
-            "& .MuiSelect-select": {
-              textAlign: "left",
-              paddingLeft: "14px",
-            },
-          }}
-        >
-          <MenuItem value="">
-            <em>Select a department</em>
-          </MenuItem>
-          {departments.map((dept) => (
-            <MenuItem key={dept.departmentId} value={dept.departmentId}>
-              {dept.departmentName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Grid>
-  );
-
-  const roleSelect = (
-    <Grid item xs={12} sm={6}>
-      <FormControl variant="outlined" fullWidth required>
-        <InputLabel style={{ color: "var(--color)" }}>Role</InputLabel>
-        <Select
-          name="role"
-          value={formData.role || ""}
-          onChange={handleChange}
-          label="Role"
-          sx={{
-            textAlign: "left",
-            "& .MuiSelect-select": {
-              textAlign: "left",
-              paddingLeft: "14px",
-            },
-          }}
-        >
-          <MenuItem value="">
-            <em>Select a role</em>
-          </MenuItem>
-          <MenuItem value="Admin">Admin</MenuItem>
-          <MenuItem value="Employee">Employee</MenuItem>
-        </Select>
-      </FormControl>
-    </Grid>
-  );
+  const {
+    formData,
+    departments,
+    samagraLoaded,
+    emptyFields,
+    photoPreview,
+    isLoading,
+    dialogOpen,
+    dialogMessage,
+    errorColor,
+    handleChange,
+    handleSamagraData,
+    getFieldHelperText,
+    validateForm,
+    setDialogOpen,
+    textFieldStyles,
+  } = useEmployeeForm();
 
   return (
     <div className="form-container">
@@ -127,115 +38,60 @@ const AddEmployeeForm = ({ onSave, onCancel }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSave(formData);
+          const formatDate = (date) => {
+            if (!date) return "";
+            // If already in YYYY-MM-DD, return as is
+            if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+            // Try to parse and format
+            const d = new Date(date);
+            if (isNaN(d)) return "";
+            return d.toISOString().slice(0, 10);
+          };
+          const dataToSubmit = {
+            ...formData,
+            salary: Number(formData.salary),
+            departmentId: Number(formData.departmentId),
+            samagraId: Number(formData.samagraId),
+            trainingRequired: Boolean(formData.trainingRequired),
+            DOB: formatDate(formData.DOB),
+          };
+
+          if (!validateForm(dataToSubmit)) {
+            return;
+          }
+
+          onSave(dataToSubmit);
         }}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Contact"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Salary"
-              name="salary"
-              type="number"
-              value={formData.salary}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Job Role"
-              name="jobRole"
-              value={formData.jobRole}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              fullWidth
-              {...textFieldProps}
-            />
-          </Grid>
-          {roleSelect}
-          {departmentSelect}
-          <Grid item xs={12} sm={6}>
-            <FormControl variant="outlined" fullWidth required>
-              <InputLabel style={{ color: "var(--color)" }}>
-                Training Required
-              </InputLabel>
-              <Select
-                name="trainingRequired"
-                value={String(formData.trainingRequired)} // Convert to string
-                onChange={handleChange}
-                label="Training Required"
-              >
-                <MenuItem value="true">Yes</MenuItem>
-                <MenuItem value="false">No</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <div className="button-group">
+        <SamagraSection
+          formData={formData}
+          onChange={handleChange}
+          onFetchSamagra={handleSamagraData}
+          isLoading={isLoading}
+          textFieldProps={textFieldStyles}
+        />
+
+        <PersonalInfoSection
+          formData={formData}
+          onChange={handleChange}
+          samagraLoaded={samagraLoaded}
+          emptyFields={emptyFields}
+          getFieldHelperText={getFieldHelperText}
+          textFieldProps={textFieldStyles}
+          photoPreview={photoPreview}
+        />
+
+        <EmploymentSection
+          formData={formData}
+          departments={departments}
+          onChange={handleChange}
+          textFieldProps={textFieldStyles}
+        />
+
+        <div
+          className="button-group"
+          style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}
+        >
           <Button
             type="submit"
             variant="contained"
@@ -254,6 +110,44 @@ const AddEmployeeForm = ({ onSave, onCancel }) => {
           </Button>
         </div>
       </form>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "var(--bg-color)",
+            color: "var(--color)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ borderBottom: "1px solid var(--color)" }}>
+          Samagra Data Information
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            sx={{
+              color: errorColor,
+              marginTop: 2,
+            }}
+          >
+            {dialogMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setDialogOpen(false)}
+            sx={{
+              color: "var(--color)",
+              "&:hover": {
+                backgroundColor: "rgba(var(--color-rgb), 0.1)",
+              },
+            }}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
